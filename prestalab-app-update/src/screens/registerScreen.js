@@ -17,9 +17,12 @@ import AppTextInput from '../components/AppTextInput';
 import PrimaryButton from '../components/PrimaryButton';
 import { COLORS } from '../theme/palette';
 
+const GENDERS = ['Masculino', 'Femenino', 'Otro'];
+
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState('Masculino');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -54,7 +57,7 @@ export default function RegisterScreen({ navigation }) {
     setLoading(true);
     setError('');
 
-    const result = await registerUser(cleanEmail, cleanPassword, cleanName, cleanLastName, cleanPhone);
+    const result = await registerUser(cleanEmail, cleanPassword, cleanName, cleanLastName, cleanPhone, gender);
 
     if (!result.success) {
       setError(result.error);
@@ -112,6 +115,46 @@ export default function RegisterScreen({ navigation }) {
             autoCapitalize="words"
             style={styles.field}
           />
+
+          {/* Campo Sexo / Género */}
+          <View style={styles.genderContainer}>
+            <Text style={styles.genderLabel}>Sexo / Género *</Text>
+            <View style={styles.genderRow}>
+              {GENDERS.map((g) => {
+                const isSelected = gender === g;
+                return (
+                  <TouchableOpacity
+                    key={g}
+                    onPress={() => setGender(g)}
+                    style={[
+                      styles.genderChip,
+                      isSelected && styles.genderChipSelected,
+                    ]}
+                  >
+                    <MaterialCommunityIcons
+                      name={
+                        g === 'Masculino'
+                          ? 'gender-male'
+                          : g === 'Femenino'
+                          ? 'gender-female'
+                          : 'gender-non-binary'
+                      }
+                      size={18}
+                      color={isSelected ? '#FEFFFE' : '#4F6355'}
+                    />
+                    <Text
+                      style={[
+                        styles.genderChipText,
+                        isSelected && styles.genderChipTextSelected,
+                      ]}
+                    >
+                      {g}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
 
           <AppTextInput
             label="Teléfono"
@@ -217,6 +260,44 @@ const styles = StyleSheet.create({
   field: {
     marginBottom: 4,
   },
+  genderContainer: {
+    marginVertical: 8,
+  },
+  genderLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#3E4941',
+    marginBottom: 8,
+    fontFamily: 'Inter_500Medium',
+  },
+  genderRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  genderChip: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: '#EFF5F1',
+    borderWidth: 1.5,
+    borderColor: '#BDCAC0',
+  },
+  genderChipSelected: {
+    backgroundColor: '#256B42',
+    borderColor: '#256B42',
+  },
+  genderChipText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#3E4941',
+  },
+  genderChipTextSelected: {
+    color: '#FEFFFE',
+  },
   error: {
     fontFamily: 'Inter_400Regular',
     fontSize: 13,
@@ -225,7 +306,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   submit: {
-    marginTop: 4,
+    marginTop: 12,
     marginBottom: 24,
   },
   footer: {

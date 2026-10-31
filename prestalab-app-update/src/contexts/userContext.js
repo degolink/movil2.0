@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect } from "react";
-import { auth } from "../config/fbConfig";
+import { auth, db } from "../config/fbConfig";
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -7,6 +7,7 @@ import {
   signOut as firebaseSignOut,
   updateProfile,
 } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const UserContext = createContext();
 
@@ -15,8 +16,28 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const userDoc = await getDoc(doc(db, "usuarios", firebaseUser.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUser({
+              ...firebaseUser,
+              genero: userData.genero || 'Otro',
+              rol: userData.rol || 'estudiante',
+              departamento: userData.departamento || '',
+            });
+          } else {
+            setUser(firebaseUser);
+          }
+        } catch (e) {
+          console.warn("Error cargando perfil Firestore:", e);
+          setUser(firebaseUser);
+        }
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
@@ -27,7 +48,7 @@ export function UserProvider({ children }) {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
-      password,
+      password
     );
     await updateProfile(userCredential.user, {
       displayName: `${name} ${lastName}`,

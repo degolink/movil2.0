@@ -10,6 +10,7 @@ import ProfileScreen from "../screens/profileScreen";
 import ArticulosScreen from "../screens/articulosScreen";
 import ArticleDetailScreen from "../screens/articleDetailScreen";
 import LoanRequestScreen from "../screens/loanRequestScreen";
+import LoanHistoryScreen from "../screens/loanHistoryScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -104,6 +105,7 @@ export default function MainStack() {
       <Stack.Screen name="MainTabs" component={HomeTabs} />
       <Stack.Screen name="ArticleDetail" component={ArticleDetailScreen} />
       <Stack.Screen name="LoanRequest" component={LoanRequestScreen} />
+      <Stack.Screen name="LoanHistory" component={LoanHistoryScreen} />
     </Stack.Navigator>
   );
 }

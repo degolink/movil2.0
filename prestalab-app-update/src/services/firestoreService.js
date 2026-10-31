@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   getDoc,
+  setDoc,
   query,
   where,
   orderBy,
@@ -13,13 +14,16 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/fbConfig";
 
+// ==========================================
+// ARTÍCULOS
+// ==========================================
 
 export const createArticle = async (articleData) => {
   try {
     const docRef = await addDoc(collection(db, "articulos"), {
       ...articleData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
     return { id: docRef.id, ...articleData };
   } catch (error) {
@@ -32,15 +36,17 @@ export const getArticles = async (filters = {}) => {
   try {
     let q = collection(db, "articulos");
 
-    if (filters.category) {
+    if (filters.category && filters.category !== "Todos") {
       q = query(q, where("categoria", "==", filters.category));
+    }
+
+    if (filters.salaId && filters.salaId !== "todas") {
+      q = query(q, where("salaId", "==", filters.salaId));
     }
 
     if (filters.available) {
       q = query(q, where("stock", ">", 0));
     }
-
-    q = query(q, orderBy("createdAt", "desc"));
 
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({
@@ -72,7 +78,7 @@ export const updateArticle = async (articleId, updates) => {
     const docRef = doc(db, "articulos", articleId);
     await updateDoc(docRef, {
       ...updates,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     });
   } catch (error) {
     console.error("Error al actualizar artículo:", error);
@@ -89,47 +95,94 @@ export const deleteArticle = async (articleId) => {
   }
 };
 
+// ==========================================
+// SALAS Y LABORATORIOS
+// ==========================================
+
+export const getSalas = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "salas"));
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error("Error al obtener salas:", error);
+    return [];
+  }
+};
+
+export const subscribeToSalas = (callback) => {
+  const q = collection(db, "salas");
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const salas = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      callback(salas);
+    },
+    (error) => {
+      console.error("Error al suscribirse a salas:", error);
+      callback([]);
+    }
+  );
+};
+
+// ==========================================
+// PRÉSTAMOS Y SOLICITUDES DINÁMICAS
+// ==========================================
 
 export const createLoan = async (loanData) => {
   try {
-    const docRef = await addDoc(collection(db, "prestamos"), {
+    // Las solicitudes inician en estado "pendiente" para revisión del Gestor
+    const estadoInicial = loanData.estado || "pendiente";
+
+    const payload = {
       ...loanData,
-      estado: "activo",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      estado: estadoInicial,
+      fueReasignada: false,
+      fechaSolicitud: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const docRef = await addDoc(collection(db, "solicitudes"), payload);
+
+    // Registro espejo en prestamos para compatibilidad
+    await setDoc(doc(db, "prestamos", docRef.id), {
+      id: docRef.id,
+      ...payload,
     });
 
-    const articleRef = doc(db, "articulos", loanData.articuloId);
-    const articleSnap = await getDoc(articleRef);
-    if (articleSnap.exists()) {
-      await updateDoc(articleRef, {
-        stock: articleSnap.data().stock - loanData.cantidad,
-        updatedAt: new Date(),
-      });
-    }
-
-    return { id: docRef.id, ...loanData };
+    return { id: docRef.id, ...payload };
   } catch (error) {
-    console.error("Error al crear préstamo:", error);
+    console.error("Error al crear solicitud de préstamo:", error);
     throw error;
   }
 };
 
 export const getLoans = async (userId) => {
   try {
-    let q = collection(db, "prestamos");
+    let q = collection(db, "solicitudes");
 
     if (userId) {
       q = query(q, where("userId", "==", userId));
     }
 
-    q = query(q, orderBy("createdAt", "desc"));
-
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({
+    const loans = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
+
+    // Ordenar por fecha descendente
+    return loans.sort(
+      (a, b) =>
+        new Date(b.fechaSolicitud || b.createdAt || 0).getTime() -
+        new Date(a.fechaSolicitud || a.createdAt || 0).getTime()
+    );
   } catch (error) {
     console.error("Error al obtener préstamos:", error);
     throw error;
@@ -138,7 +191,7 @@ export const getLoans = async (userId) => {
 
 export const getLoan = async (loanId) => {
   try {
-    const docRef = doc(db, "prestamos", loanId);
+    const docRef = doc(db, "solicitudes", loanId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       return { id: docSnap.id, ...docSnap.data() };
@@ -152,11 +205,13 @@ export const getLoan = async (loanId) => {
 
 export const updateLoan = async (loanId, updates) => {
   try {
-    const docRef = doc(db, "prestamos", loanId);
-    await updateDoc(docRef, {
+    const docRef = doc(db, "solicitudes", loanId);
+    const timestampUpdates = {
       ...updates,
-      updatedAt: new Date(),
-    });
+      updatedAt: new Date().toISOString(),
+    };
+    await updateDoc(docRef, timestampUpdates);
+    await updateDoc(doc(db, "prestamos", loanId), timestampUpdates);
   } catch (error) {
     console.error("Error al actualizar préstamo:", error);
     throw error;
@@ -165,25 +220,31 @@ export const updateLoan = async (loanId, updates) => {
 
 export const returnLoan = async (loanId) => {
   try {
-    const loanRef = doc(db, "prestamos", loanId);
+    const loanRef = doc(db, "solicitudes", loanId);
     const loanSnap = await getDoc(loanRef);
 
     if (loanSnap.exists()) {
       const loanData = loanSnap.data();
 
-      await updateDoc(loanRef, {
+      const returnUpdates = {
         estado: "devuelto",
-        fechaDevolucion: new Date(),
-        updatedAt: new Date(),
-      });
+        fechaDevolucion: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-      const articleRef = doc(db, "articulos", loanData.articuloId);
-      const articleSnap = await getDoc(articleRef);
-      if (articleSnap.exists()) {
-        await updateDoc(articleRef, {
-          stock: articleSnap.data().stock + loanData.cantidad,
-          updatedAt: new Date(),
-        });
+      await updateDoc(loanRef, returnUpdates);
+      await updateDoc(doc(db, "prestamos", loanId), returnUpdates);
+
+      // Devolver stock al artículo
+      if (loanData.articuloId) {
+        const articleRef = doc(db, "articulos", loanData.articuloId);
+        const articleSnap = await getDoc(articleRef);
+        if (articleSnap.exists()) {
+          await updateDoc(articleRef, {
+            stock: (articleSnap.data().stock || 0) + (loanData.cantidad || 1),
+            updatedAt: new Date().toISOString(),
+          });
+        }
       }
     }
   } catch (error) {
@@ -194,6 +255,7 @@ export const returnLoan = async (loanId) => {
 
 export const deleteLoan = async (loanId) => {
   try {
+    await deleteDoc(doc(db, "solicitudes", loanId));
     await deleteDoc(doc(db, "prestamos", loanId));
   } catch (error) {
     console.error("Error al eliminar préstamo:", error);
@@ -201,21 +263,39 @@ export const deleteLoan = async (loanId) => {
   }
 };
 
+// ==========================================
+// SUSCRIPCIONES EN TIEMPO REAL
+// ==========================================
 
 export const subscribeToLoans = (userId, callback) => {
-  let q = collection(db, "prestamos");
+  let q = collection(db, "solicitudes");
 
   if (userId) {
     q = query(q, where("userId", "==", userId));
   }
 
-  return onSnapshot(q, (snapshot) => {
-    const loans = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    callback(loans);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const loans = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Ordenar cronológicamente
+      loans.sort(
+        (a, b) =>
+          new Date(b.fechaSolicitud || b.createdAt || 0).getTime() -
+          new Date(a.fechaSolicitud || a.createdAt || 0).getTime()
+      );
+
+      callback(loans);
+    },
+    (error) => {
+      console.error("Error al suscribirse a solicitudes/préstamos:", error);
+      callback([]);
+    }
+  );
 };
 
 export const subscribeToArticles = (callback) => {
@@ -233,6 +313,6 @@ export const subscribeToArticles = (callback) => {
     (error) => {
       console.error("Error al suscribirse a artículos:", error);
       callback([]);
-    },
+    }
   );
 };

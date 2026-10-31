@@ -37,7 +37,7 @@ function MenuRow({ icon, title, subtitle, onPress, divider }) {
   );
 }
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const { user } = useUser();
   const [stats, setStats] = useState({
     totalLoans: 0,
@@ -114,8 +114,8 @@ export default function ProfileScreen() {
           <MenuRow
             icon="history"
             title="Historial de préstamos"
-            subtitle="Consulta tu préstamo registrado"
-            onPress={showSoon}
+            subtitle="Consulta tu historial y solicitudes"
+            onPress={() => navigation.navigate('LoanHistory')}
             divider
           />
           <MenuRow

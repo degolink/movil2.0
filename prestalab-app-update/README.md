@@ -1,44 +1,36 @@
-# PrestaLab
+# 📱 PrestaLab Mobile — Aplicación Móvil para Estudiantes y Docentes
 
-Sistema de gestión de préstamos de laboratorio.
+Aplicación móvil desarrollada en **React Native** con **Expo** y **Firebase** para el ecosistema **PrestaLab**. Permite a estudiantes y docentes consultar el inventario localizado de laboratorios en tiempo real, tramitar solicitudes de préstamo y auditar su historial completo de interacciones.
 
-## Descripción
+---
 
-Sistema para gestionar el préstamo de elementos de laboratorio, permitiendo préstamos internos y externos con control de tiempos y sanciones.
+## 🚀 Nuevas Funcionalidades Implementadas
 
-## Configuración
+### 1. 🕒 Trazabilidad Completa: Pantalla de Historial (`LoanHistoryScreen`)
+* Sección exclusiva accesible desde **Perfil > Historial de préstamos**.
+* Filtros por estado: `Todos`, `Pendientes`, `Activos`, `Devueltos`, `Rechazados`.
+* **Notificación de Reasignación:** Si el gestor modificó la sala asignada por mantenimiento o cruce de horarios, se muestra un banner distintivo con la sala original y el motivo justificado.
+* **Motivo de Rechazo:** Si la solicitud fue denegada, se detalla la justificación formal ingresada por el gestor.
 
-La aplicación usa Firebase y necesita estas variables de entorno para iniciar
-la autenticación y Firestore:
+### 2. 🔄 Flujo Dinámico de Solicitudes y Enrutamiento al Gestor (`LoanRequestScreen`)
+* **Selector de Laboratorio / Sala de Destino:** Muestra en tiempo real las salas disponibles (`LAB-201`, `LAB-104`, `SALA-302`, etc.) y su capacidad.
+* **Enrutamiento en Tiempo Real:** Las solicitudes se guardan en estado **`pendiente`**, redirigiéndose de inmediato al panel web del Gestor asignado para su evaluación.
 
-1. Crea una aplicación web en tu proyecto de Firebase.
-2. Copia `.env.example` como `.env`.
-3. Completa los valores de la configuración de Firebase en `.env`.
-4. Habilita Authentication (proveedor Email/Password) y crea la base de datos
-   de Firestore.
-5. Reinicia Expo después de modificar `.env`:
+### 3. 📦 Catálogo de Inventario Localizado (`ArticulosScreen`)
+* Filtro de activos por **Laboratorio Físico** (`salaId`) y por **Categoría** (`Herramientas`, `Dispositivos`, `Cables`, `Redes`).
+* Identificación clara del código institucional de activo (`ACT-...`) y del laboratorio físico en cada tarjeta.
+
+### 4. 🔔 Comunicación Proactiva en Inicio (`HomeScreen`)
+* Banner de notificación de **solicitudes en revisión por el gestor** con acceso directo al historial.
+* Notificación visual en las tarjetas de préstamos activos si la sala fue modificada o reasignada.
+
+---
+
+## 🛠️ Ejecución de la App Móvil con Expo
 
 ```bash
-npm start -- --clear
-```
+cd /d/movil2/prestalab-app-update
 
-Las variables `EXPO_PUBLIC_*` se incluyen en el cliente móvil; no coloques
-claves privadas o credenciales de cuentas de servicio en `.env`.
-
-## Documentación
-
-- [Requisitos del Sistema](docs/investigacion/Requisitos_Sistema.docx)
-- [Matriz de Trazabilidad](docs/investigacion/Matriz_Trazabilidad.docx)
-
-## Estructura del proyecto
-
-```
-PrestaLab-app/
-├── docs/
-│   └── investigacion/
-│       ├── Requisitos_Sistema.docx
-│       └── Matriz_Trazabilidad.docx
-├── src/
-├── App.js
-└── package.json
+# Iniciar el servidor Metro
+npx expo start
 ```

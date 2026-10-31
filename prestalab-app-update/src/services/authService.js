@@ -1,4 +1,4 @@
-import { auth } from '../config/fbConfig';
+import { auth, db } from '../config/fbConfig';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -6,6 +6,7 @@ import {
   sendPasswordResetEmail,
   updateProfile,
 } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 const errorMessages = {
   'auth/user-not-found': 'No existe una cuenta con este correo.',
@@ -22,7 +23,7 @@ const getErrorMessage = (errorCode) => {
   return errorMessages[errorCode] || 'Ocurrió un error. Intenta de nuevo.';
 };
 
-export const registerUser = async (email, password, name, lastName, phone) => {
+export const registerUser = async (email, password, name, lastName, phone, gender = 'Otro') => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -30,10 +31,26 @@ export const registerUser = async (email, password, name, lastName, phone) => {
       password
     );
 
+    const displayName = `${name} ${lastName}`;
     await updateProfile(userCredential.user, {
-      displayName: `${name} ${lastName}`,
-      phoneNumber: phone,
+      displayName,
     });
+
+    // Guardar documento del usuario en Firestore con rol y género
+    try {
+      await setDoc(doc(db, 'usuarios', userCredential.user.uid), {
+        id: userCredential.user.uid,
+        nombre: displayName,
+        email,
+        telefono: phone,
+        genero: gender,
+        rol: 'estudiante',
+        departamento: 'Estudiante',
+        createdAt: new Date().toISOString(),
+      }, { merge: true });
+    } catch (fsErr) {
+      console.warn('Advertencia guardando perfil en Firestore:', fsErr);
+    }
 
     return { success: true, user: userCredential.user };
   } catch (error) {

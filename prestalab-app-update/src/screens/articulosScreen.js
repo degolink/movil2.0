@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { subscribeToArticles } from '../services/firestoreService';
+import { subscribeToArticles, subscribeToSalas } from '../services/firestoreService';
 import PrimaryButton from '../components/PrimaryButton';
 import { articleIconName } from '../components/articleIcon';
 import { COLORS } from '../theme/palette';
@@ -18,42 +18,62 @@ const BASE_CATEGORIES = ['Todos', 'Herramientas', 'Dispositivos', 'Cables'];
 
 export default function ArticulosScreen({ navigation }) {
   const [articles, setArticles] = useState([]);
+  const [salas, setSalas] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [selectedSalaId, setSelectedSalaId] = useState('todas');
 
   useEffect(() => {
-    const unsubscribe = subscribeToArticles((articlesData) => {
+    const unsubArticles = subscribeToArticles((articlesData) => {
       setArticles(articlesData);
       setFilteredArticles(articlesData);
     });
 
-    return () => unsubscribe();
+    const unsubSalas = subscribeToSalas((salasList) => {
+      setSalas(salasList);
+    });
+
+    return () => {
+      unsubArticles();
+      unsubSalas();
+    };
   }, []);
 
   useEffect(() => {
     let filtered = articles;
 
-    if (searchQuery) {
-      filtered = filtered.filter((article) =>
-        article.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        article.descripcion?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    // Filtro por laboratorio físico
+    if (selectedSalaId !== 'todas') {
+      filtered = filtered.filter((article) => article.salaId === selectedSalaId);
     }
 
+    // Filtro por categoría
     if (selectedCategory !== 'Todos') {
       filtered = filtered.filter((article) => article.categoria === selectedCategory);
     }
 
+    // Filtro por búsqueda
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (article) =>
+          article.nombre?.toLowerCase().includes(q) ||
+          article.descripcion?.toLowerCase().includes(q) ||
+          article.codigoActivo?.toLowerCase().includes(q) ||
+          article.salaNombre?.toLowerCase().includes(q)
+      );
+    }
+
     setFilteredArticles(filtered);
-  }, [searchQuery, selectedCategory, articles]);
+  }, [searchQuery, selectedCategory, selectedSalaId, articles]);
 
   const categories = articles.some((a) => a.categoria === 'Redes')
     ? [...BASE_CATEGORIES, 'Redes']
     : BASE_CATEGORIES;
 
   const sectionTitle =
-    selectedCategory === 'Todos' ? 'Todos los artículos' : selectedCategory;
+    selectedCategory === 'Todos' ? 'Inventario Localizado' : selectedCategory;
   const count = filteredArticles.length;
 
   const renderArticle = (article) => {
@@ -71,8 +91,27 @@ export default function ArticulosScreen({ navigation }) {
             />
           </View>
           <View style={styles.articleInfo}>
-            <Text style={styles.articleCategory}>{article.categoria}</Text>
+            <View style={styles.metaTopRow}>
+              <Text style={styles.articleCategory}>{article.categoria}</Text>
+              {article.codigoActivo ? (
+                <Text style={styles.codigoActivoTag}>{article.codigoActivo}</Text>
+              ) : null}
+            </View>
+
             <Text style={styles.articleName}>{article.nombre}</Text>
+
+            {/* Ubicación física de Laboratorio */}
+            <View style={styles.salaBadge}>
+              <MaterialCommunityIcons
+                name="door-open"
+                size={14}
+                color="#256B42"
+              />
+              <Text style={styles.salaBadgeText} numberOfLines={1}>
+                {article.salaNombre || 'Laboratorio Central'}
+              </Text>
+            </View>
+
             <View style={styles.availabilityRow}>
               <View
                 style={[
@@ -111,13 +150,16 @@ export default function ArticulosScreen({ navigation }) {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Artículos</Text>
-        <Text style={styles.subtitle}>Encuentra el equipo para tu proyecto.</Text>
+        <Text style={styles.title}>Catálogo de Activos</Text>
+        <Text style={styles.subtitle}>
+          Inventario físico y disponibilidad en tiempo real por laboratorio.
+        </Text>
 
+        {/* Buscador */}
         <View style={styles.searchContainer}>
           <MaterialCommunityIcons name="magnify" size={22} color={COLORS.textSoft} />
           <TextInput
-            placeholder="Buscar por nombre de artículo"
+            placeholder="Buscar por equipo, código o laboratorio..."
             placeholderTextColor="#7E8A81"
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -134,6 +176,56 @@ export default function ArticulosScreen({ navigation }) {
           )}
         </View>
 
+        {/* Filtro por Laboratorio Físico */}
+        <Text style={styles.filterTitle}>Filtrar por Laboratorio:</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.salaChipsRow}
+        >
+          <TouchableOpacity
+            onPress={() => setSelectedSalaId('todas')}
+            style={[
+              styles.salaChip,
+              selectedSalaId === 'todas' && styles.salaChipActive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.salaChipText,
+                selectedSalaId === 'todas' && styles.salaChipTextActive,
+              ]}
+            >
+              Todos los Labs
+            </Text>
+          </TouchableOpacity>
+
+          {salas.map((sala) => {
+            const isSelected = selectedSalaId === sala.id;
+            return (
+              <TouchableOpacity
+                key={sala.id}
+                onPress={() => setSelectedSalaId(sala.id)}
+                style={[
+                  styles.salaChip,
+                  isSelected && styles.salaChipActive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.salaChipText,
+                    isSelected && styles.salaChipTextActive,
+                  ]}
+                >
+                  {sala.codigo} ({sala.nombre.split(' ')[1] || 'Lab'})
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+
+        {/* Filtro por Categorías */}
+        <Text style={styles.filterTitle}>Categoría:</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -156,10 +248,11 @@ export default function ArticulosScreen({ navigation }) {
           })}
         </ScrollView>
 
+        {/* Header de Resultados */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{sectionTitle}</Text>
           <Text style={styles.sectionMeta}>
-            {count} {count === 1 ? 'artículo' : 'artículos'}
+            {count} {count === 1 ? 'artículo disponible' : 'artículos disponibles'}
           </Text>
         </View>
 
@@ -170,7 +263,9 @@ export default function ArticulosScreen({ navigation }) {
               size={44}
               color={COLORS.textSoft}
             />
-            <Text style={styles.emptyText}>No se encontraron artículos</Text>
+            <Text style={styles.emptyText}>
+              No se encontraron activos en este laboratorio o categoría
+            </Text>
           </View>
         ) : (
           filteredArticles.map(renderArticle)
@@ -183,8 +278,8 @@ export default function ArticulosScreen({ navigation }) {
             color={COLORS.primary}
           />
           <Text style={styles.infoText}>
-            Elige un artículo y solicita su préstamo. Revisa tus devoluciones desde
-            Inicio.
+            Cada solicitud se enruta automáticamente al Gestor del laboratorio
+            seleccionado. Revisa tus aprobaciones desde Inicio o en Historial.
           </Text>
         </View>
 
@@ -200,22 +295,23 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   content: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingTop: 14,
   },
   title: {
     fontFamily: 'Inter_700Bold',
     fontWeight: '700',
-    fontSize: 34,
+    fontSize: 28,
     color: COLORS.text,
     letterSpacing: -0.6,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   subtitle: {
     fontFamily: 'Inter_400Regular',
-    fontSize: 16,
+    fontSize: 14,
     color: COLORS.textMuted,
-    marginBottom: 22,
+    marginBottom: 16,
+    lineHeight: 20,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -225,26 +321,59 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderInput,
     borderRadius: 14,
-    height: 54,
-    paddingHorizontal: 16,
-    marginBottom: 18,
+    height: 50,
+    paddingHorizontal: 14,
+    marginBottom: 16,
   },
   searchInput: {
     flex: 1,
     fontFamily: 'Inter_400Regular',
-    fontSize: 15,
+    fontSize: 14,
     color: COLORS.text,
     padding: 0,
   },
-  chipsRow: {
-    gap: 10,
+  filterTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#3E4941',
+    marginBottom: 6,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  salaChipsRow: {
+    gap: 8,
     paddingBottom: 4,
-    marginBottom: 20,
+    marginBottom: 14,
+  },
+  salaChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    backgroundColor: '#EFF5F1',
+    borderWidth: 1,
+    borderColor: '#BDCAC0',
+  },
+  salaChipActive: {
+    backgroundColor: '#256B42',
+    borderColor: '#256B42',
+  },
+  salaChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#256B42',
+  },
+  salaChipTextActive: {
+    color: '#FFFFFF',
+  },
+  chipsRow: {
+    gap: 8,
+    paddingBottom: 4,
+    marginBottom: 16,
   },
   chip: {
-    paddingHorizontal: 18,
-    paddingVertical: 9,
-    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 16,
     backgroundColor: COLORS.surface,
     borderWidth: 1,
     borderColor: COLORS.borderInput,
@@ -256,7 +385,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontFamily: 'Inter_500Medium',
     fontWeight: '500',
-    fontSize: 14,
+    fontSize: 13,
     color: COLORS.text,
   },
   chipTextActive: {
@@ -266,17 +395,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 14,
+    marginBottom: 12,
   },
   sectionTitle: {
     fontFamily: 'Inter_700Bold',
     fontWeight: '700',
-    fontSize: 18,
+    fontSize: 16,
     color: COLORS.text,
   },
   sectionMeta: {
     fontFamily: 'Inter_400Regular',
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.textSoft,
   },
   emptyCard: {
@@ -289,9 +418,11 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontFamily: 'Inter_400Regular',
-    fontSize: 14,
+    fontSize: 13,
     color: COLORS.textMuted,
     marginTop: 10,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
   articleCard: {
     backgroundColor: COLORS.surface,
@@ -299,17 +430,17 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     borderRadius: 18,
     padding: 14,
-    marginBottom: 16,
+    marginBottom: 14,
   },
   articleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-    marginBottom: 14,
+    gap: 12,
+    marginBottom: 12,
   },
   articleThumb: {
-    width: 62,
-    height: 62,
+    width: 58,
+    height: 58,
     borderRadius: 14,
     backgroundColor: COLORS.greenSoftStrong,
     alignItems: 'center',
@@ -318,33 +449,64 @@ const styles = StyleSheet.create({
   articleInfo: {
     flex: 1,
   },
+  metaTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 2,
+  },
   articleCategory: {
     fontFamily: 'Inter_400Regular',
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.textSoft,
-    marginBottom: 3,
+  },
+  codigoActivoTag: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#4F6355',
+    backgroundColor: '#EFF5F1',
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 6,
+    fontFamily: 'monospace',
   },
   articleName: {
     fontFamily: 'Inter_700Bold',
     fontWeight: '700',
-    fontSize: 20,
+    fontSize: 17,
     color: COLORS.text,
     letterSpacing: -0.3,
+    marginBottom: 4,
+  },
+  salaBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EFF5F1',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
     marginBottom: 6,
+  },
+  salaBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#256B42',
   },
   availabilityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 7,
+    gap: 6,
   },
   dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   availabilityText: {
     fontFamily: 'Inter_400Regular',
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.textMuted,
   },
   solicitButton: {
@@ -356,17 +518,17 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: COLORS.greenSoft,
     borderRadius: 14,
-    padding: 16,
+    padding: 14,
     marginTop: 4,
   },
   infoText: {
     flex: 1,
     fontFamily: 'Inter_400Regular',
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 12,
+    lineHeight: 18,
     color: COLORS.textMuted,
   },
   bottomSpacing: {
-    height: 110,
+    height: 100,
   },
 });
