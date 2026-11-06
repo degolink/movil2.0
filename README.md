@@ -3,7 +3,7 @@
 > **Documento Oficial de Presentación y Defensa Técnica de Proyecto**  
 > **Ecosistema Multiplataforma:** Mobile App (React Native / Expo) + Web Backoffice (Next.js 16 Turbopack) + Cloud Architecture (Firebase Firestore & Auth) + Motor BI (Highcharts).
 >
-> **Actualizacion 2026:** la app movil ya no usa Firebase en el cliente. Consume la API de Vercel (`/api/mobile/*`, JWT y `EXPO_PUBLIC_API_VERCEL`). Firebase Admin queda solo del lado del servidor. Ver `docs/INTEGRACION.md`.
+> **Actualizacion 2026:** la app movil ya no usa Firebase en el cliente. Consume la API de Vercel (`/api/mobile/*`, JWT y `EXPO_PUBLIC_API_VERCEL`). Firebase Admin queda solo del lado del servidor. Ver `docs/GUIA_TECNICA.md` (guia completa) y `docs/INTEGRACION.md`.
 
 ---
 
