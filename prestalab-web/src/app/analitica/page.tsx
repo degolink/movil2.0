@@ -312,14 +312,14 @@ export default function AnaliticaPage() {
 
       <main className="p-8 space-y-6 max-w-7xl mx-auto w-full">
         {/* Selector de Pestaña Principal */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border)] pb-4">
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setActiveTab('inventario')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[14px] text-[13px] font-bold transition-all cursor-pointer ${
                 activeTab === 'inventario'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/20'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-[var(--primary)] text-white  '
+                  : 'bg-white text-[var(--text-muted)] hover:bg-[var(--green-soft)] border border-[var(--border)]'
               }`}
             >
               <Boxes className="w-4 h-4" />
@@ -328,10 +328,10 @@ export default function AnaliticaPage() {
 
             <button
               onClick={() => setActiveTab('uso_salas')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[14px] text-[13px] font-bold transition-all cursor-pointer ${
                 activeTab === 'uso_salas'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/20'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-[var(--primary)] text-white  '
+                  : 'bg-white text-[var(--text-muted)] hover:bg-[var(--green-soft)] border border-[var(--border)]'
               }`}
             >
               <DoorOpen className="w-4 h-4" />
@@ -340,10 +340,10 @@ export default function AnaliticaPage() {
 
             <button
               onClick={() => setActiveTab('prestamos')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[14px] text-[13px] font-bold transition-all cursor-pointer ${
                 activeTab === 'prestamos'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/20'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-[var(--primary)] text-white  '
+                  : 'bg-white text-[var(--text-muted)] hover:bg-[var(--green-soft)] border border-[var(--border)]'
               }`}
             >
               <ClipboardList className="w-4 h-4" />
@@ -352,10 +352,10 @@ export default function AnaliticaPage() {
 
             <button
               onClick={() => setActiveTab('segmentado')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[14px] text-[13px] font-bold transition-all cursor-pointer ${
                 activeTab === 'segmentado'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/20'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-[var(--primary)] text-white  '
+                  : 'bg-white text-[var(--text-muted)] hover:bg-[var(--green-soft)] border border-[var(--border)]'
               }`}
             >
               <Users className="w-4 h-4" />
@@ -366,31 +366,31 @@ export default function AnaliticaPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => fetchCurrentTabReport()}
-              className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs"
+              className="p-2.5 rounded-[14px] bg-white border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--background)] transition-colors "
               title="Refrescar datos"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-600' : ''}`} />
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[var(--primary)]' : ''}`} />
             </button>
 
             <button
               onClick={() => window.print()}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-xs"
+              className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-white text-[var(--text-muted)] border border-[var(--border)] hover:bg-[var(--background)] transition-colors "
             >
-              <Download className="w-4 h-4 text-emerald-600" /> Exportar Informe
+              <Download className="w-4 h-4 text-[var(--primary)]" /> Exportar Informe
             </button>
           </div>
         </div>
 
         {/* Panel de Filtros Compartido Dinámico */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
+        <div className="bg-white p-5 rounded-[18px] border border-[var(--border)]  space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
-              <Filter className="w-4 h-4 text-emerald-600" />
+            <div className="flex items-center gap-2 text-[13px] font-bold text-[var(--text)]">
+              <Filter className="w-4 h-4 text-[var(--primary)]" />
               <span>Filtros Paramétricos del Reporte ({activeTab.replace('_', ' ').toUpperCase()})</span>
             </div>
             <button
               onClick={resetFilters}
-              className="text-xs font-semibold text-slate-400 hover:text-emerald-700 transition-colors"
+              className="text-[13px] font-semibold text-[var(--text-soft)] hover:text-[var(--primary)] transition-colors"
             >
               Limpiar Filtros
             </button>
@@ -399,13 +399,13 @@ export default function AnaliticaPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 pt-2">
             {/* Laboratorio / Sala */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                 Laboratorio
               </label>
               <select
                 value={selectedSala}
                 onChange={(e) => setSelectedSala(e.target.value)}
-                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
               >
                 <option value="todas">Todos los Laboratorios</option>
                 {salas.map((s) => (
@@ -418,7 +418,7 @@ export default function AnaliticaPage() {
 
             {/* Fecha Inicio */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                 Fecha Inicio
               </label>
               <div className="relative">
@@ -426,14 +426,14 @@ export default function AnaliticaPage() {
                   type="date"
                   value={fechaInicio}
                   onChange={(e) => setFechaInicio(e.target.value)}
-                  className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
                 />
               </div>
             </div>
 
             {/* Fecha Fin */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                 Fecha Fin
               </label>
               <div className="relative">
@@ -441,7 +441,7 @@ export default function AnaliticaPage() {
                   type="date"
                   value={fechaFin}
                   onChange={(e) => setFechaFin(e.target.value)}
-                  className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
                 />
               </div>
             </div>
@@ -450,13 +450,13 @@ export default function AnaliticaPage() {
             {activeTab === 'inventario' && (
               <>
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                     Categoría
                   </label>
                   <select
                     value={filtroCategoria}
                     onChange={(e) => setFiltroCategoria(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
                   >
                     <option value="Todas">Todas las Categorías</option>
                     <option value="Herramientas">Herramientas</option>
@@ -470,13 +470,13 @@ export default function AnaliticaPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                     Condición Física
                   </label>
                   <select
                     value={filtroCondicion}
                     onChange={(e) => setFiltroCondicion(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
                   >
                     <option value="todas">Todas las Condiciones</option>
                     <option value="buen_estado">Buen Estado</option>
@@ -489,13 +489,13 @@ export default function AnaliticaPage() {
 
             {activeTab === 'prestamos' && (
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                   Estado Solicitud
                 </label>
                 <select
                   value={filtroEstadoPrestamo}
                   onChange={(e) => setFiltroEstadoPrestamo(e.target.value)}
-                  className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
                 >
                   <option value="todos">Todos los Estados</option>
                   <option value="pendiente">En Revisión (Pendiente)</option>
@@ -510,13 +510,13 @@ export default function AnaliticaPage() {
             {activeTab === 'segmentado' && (
               <>
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                     Género / Sexo
                   </label>
                   <select
                     value={filtroGenero}
                     onChange={(e) => setFiltroGenero(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
                   >
                     <option value="todos">Todos los Géneros</option>
                     <option value="Masculino">Masculino</option>
@@ -526,13 +526,13 @@ export default function AnaliticaPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider mb-1">
                     Rol Académico
                   </label>
                   <select
                     value={filtroRol}
                     onChange={(e) => setFiltroRol(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    className="w-full text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:ring-2 focus:ring-[var(--green-soft-strong)] focus:outline-none"
                   >
                     <option value="todos">Todos los Roles</option>
                     <option value="estudiante">Estudiantes</option>
@@ -551,56 +551,56 @@ export default function AnaliticaPage() {
           <div className="space-y-6">
             {/* KPI Cards de Condición */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-5 rounded-[18px] border border-[var(--border)] ">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider">
                     Buen Estado
                   </span>
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <ShieldCheck className="w-4 h-4 text-[var(--primary)]" />
                 </div>
-                <div className="mt-2 text-2xl font-extrabold text-emerald-900">
+                <div className="mt-2 text-2xl font-extrabold text-[var(--primary-dark)]">
                   {inventarioData?.totales?.buenEstado ?? 0} uds
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Activos operativos y certificados</p>
+                <p className="text-[13px] text-[var(--text-soft)] mt-1">Activos operativos y certificados</p>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-5 rounded-[18px] border border-[var(--border)] ">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-[var(--warning-text)] uppercase tracking-wider">
                     Dañados / Reparación
                   </span>
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
+                  <AlertTriangle className="w-4 h-4 text-[var(--warning-text)]" />
                 </div>
-                <div className="mt-2 text-2xl font-extrabold text-amber-900">
+                <div className="mt-2 text-2xl font-extrabold text-[var(--warning-text)]">
                   {inventarioData?.totales?.daniado ?? 0} uds
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Requieren mantenimiento técnico</p>
+                <p className="text-[13px] text-[var(--text-soft)] mt-1">Requieren mantenimiento técnico</p>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-5 rounded-[18px] border border-[var(--border)] ">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-[var(--error)] uppercase tracking-wider">
                     Pérdidas Registradas
                   </span>
-                  <XCircle className="w-4 h-4 text-rose-600" />
+                  <XCircle className="w-4 h-4 text-[var(--error)]" />
                 </div>
                 <div className="mt-2 text-2xl font-extrabold text-rose-900">
                   {inventarioData?.totales?.perdido ?? 0} uds
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Activos no localizados o extraviados</p>
+                <p className="text-[13px] text-[var(--text-soft)] mt-1">Activos no localizados o extraviados</p>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-5 rounded-[18px] border border-[var(--border)] ">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-[var(--text-soft)] uppercase tracking-wider">
                     Disponibles Ahora
                   </span>
-                  <Boxes className="w-4 h-4 text-slate-600" />
+                  <Boxes className="w-4 h-4 text-[var(--text-muted)]" />
                 </div>
-                <div className="mt-2 text-2xl font-extrabold text-slate-900">
+                <div className="mt-2 text-2xl font-extrabold text-[var(--text)]">
                   {inventarioData?.totales?.totalStock ?? 0} uds
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-[13px] text-[var(--text-soft)] mt-1">
                   En {inventarioData?.totales?.totalItems ?? 0} referencias catalogadas
                 </p>
               </div>
@@ -608,27 +608,27 @@ export default function AnaliticaPage() {
 
             {/* Gráficas Highcharts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-6 rounded-[18px] border border-[var(--border)] ">
                 <ChartWrapper options={inventarioPieOptions} />
               </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-6 rounded-[18px] border border-[var(--border)] ">
                 <ChartWrapper options={inventarioColumnOptions} />
               </div>
             </div>
 
             {/* Tabla Detallada de Activos Filtrados */}
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-              <div className="p-4 border-b border-slate-100 bg-slate-50/60 flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 text-sm">
+            <div className="bg-white rounded-[18px] border border-[var(--border)]  overflow-hidden">
+              <div className="p-4 border-b border-[var(--border)] bg-[var(--background)]/60 flex items-center justify-between">
+                <h4 className="font-bold text-[var(--text)] text-sm">
                   Detalle del Inventario Auditado ({inventarioData?.data?.length ?? 0} registros)
                 </h4>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse text-[13px]">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                    <tr className="border-b border-[var(--border)] bg-[var(--background)] text-[var(--text-muted)] font-bold uppercase tracking-wider text-[10px]">
                       <th className="p-3">Código</th>
                       <th className="p-3">Nombre del Activo</th>
                       <th className="p-3">Categoría</th>
@@ -638,30 +638,30 @@ export default function AnaliticaPage() {
                       <th className="p-3">Fecha Registro</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium">
+                  <tbody className="divide-y divide-[var(--border)] font-medium">
                     {(inventarioData?.data || []).map((art: any) => {
                       const cond = art.condicion || 'buen_estado';
                       return (
-                        <tr key={art.id} className="hover:bg-slate-50/60 transition-colors">
-                          <td className="p-3 font-mono font-bold text-slate-600">{art.codigoActivo}</td>
-                          <td className="p-3 font-bold text-slate-900">{art.nombre}</td>
-                          <td className="p-3 text-slate-600">{art.categoria}</td>
-                          <td className="p-3 text-emerald-800 font-semibold">{art.salaNombre}</td>
+                        <tr key={art.id} className="hover:bg-[var(--background)]/60 transition-colors">
+                          <td className="p-3 font-mono font-bold text-[var(--text-muted)]">{art.codigoActivo}</td>
+                          <td className="p-3 font-bold text-[var(--text)]">{art.nombre}</td>
+                          <td className="p-3 text-[var(--text-muted)]">{art.categoria}</td>
+                          <td className="p-3 text-[var(--primary-dark)] font-semibold">{art.salaNombre}</td>
                           <td className="p-3">{art.stockTotal || art.stock} uds</td>
                           <td className="p-3">
                             <span
                               className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
                                 cond === 'buen_estado'
-                                  ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                  ? 'bg-[var(--green-soft)] text-[var(--primary-dark)] border-[var(--border)]'
                                   : cond === 'daniado'
-                                  ? 'bg-amber-50 text-amber-800 border-amber-300'
-                                  : 'bg-rose-50 text-rose-800 border-rose-300'
+                                  ? 'bg-[var(--warning-bg)] text-[var(--warning-text)] border-[var(--warning-border)]'
+                                  : 'bg-[var(--error-bg)] text-[var(--error)] border-[var(--error-bg)]'
                               }`}
                             >
                               {cond === 'buen_estado' ? 'Buen Estado' : cond === 'daniado' ? 'Dañado' : 'Perdido'}
                             </span>
                           </td>
-                          <td className="p-3 text-slate-400">{art.fechaRegistro || '2026-10-01'}</td>
+                          <td className="p-3 text-[var(--text-soft)]">{art.fechaRegistro || '2026-10-01'}</td>
                         </tr>
                       );
                     })}
@@ -678,17 +678,17 @@ export default function AnaliticaPage() {
         {activeTab === 'uso_salas' && (
           <div className="space-y-6">
             {/* Gráfica de Ocupación con Highcharts */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs">
+            <div className="bg-white p-6 rounded-[18px] border border-[var(--border)] ">
               <ChartWrapper options={usoSalasBarOptions} />
             </div>
 
             {/* Listado Analítico por Sala */}
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4">
+            <div className="bg-white rounded-[18px] border border-[var(--border)]  p-6 space-y-4">
               <div>
-                <h4 className="font-bold text-slate-900 text-sm">
+                <h4 className="font-bold text-[var(--text)] text-sm">
                   Índice de Saturación y Demanda Horaria por Espacio
                 </h4>
-                <p className="text-xs text-slate-500">
+                <p className="text-[13px] text-[var(--text-soft)]">
                   Detección de salas con alta saturación (&ge; 75%) y horas pico recomendadas para balanceo
                 </p>
               </div>
@@ -701,52 +701,52 @@ export default function AnaliticaPage() {
                   return (
                     <div
                       key={sala.salaId}
-                      className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3"
+                      className="p-4 rounded-[14px] border border-[var(--border)] bg-[var(--background)]/50 space-y-3"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+                          <span className="text-[13px] font-mono font-bold bg-[var(--green-soft-strong)] text-[var(--primary-dark)] px-2 py-0.5 rounded">
                             {sala.codigo}
                           </span>
-                          <span className="font-bold text-slate-900 text-sm">{sala.nombre}</span>
+                          <span className="font-bold text-[var(--text)] text-sm">{sala.nombre}</span>
                         </div>
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
                             esSaturada
-                              ? 'bg-rose-50 text-rose-800 border-rose-300'
+                              ? 'bg-[var(--error-bg)] text-[var(--error)] border-[var(--error-bg)]'
                               : esModerada
-                              ? 'bg-amber-50 text-amber-800 border-amber-300'
-                              : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                              ? 'bg-[var(--warning-bg)] text-[var(--warning-text)] border-[var(--warning-border)]'
+                              : 'bg-[var(--green-soft)] text-[var(--primary-dark)] border-[var(--border)]'
                           }`}
                         >
                           {esSaturada ? 'Alta Saturación' : esModerada ? 'Demanda Media' : 'Alta Disponibilidad'}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2 text-center text-xs pt-1">
-                        <div className="bg-white p-2 rounded-lg border border-slate-100">
-                          <span className="text-[10px] text-slate-400 block font-bold">RESERVAS</span>
-                          <span className="font-extrabold text-slate-900">{sala.totalReservas}</span>
+                      <div className="grid grid-cols-3 gap-2 text-center text-[13px] pt-1">
+                        <div className="bg-white p-2 rounded-lg border border-[var(--border)]">
+                          <span className="text-[10px] text-[var(--text-soft)] block font-bold">RESERVAS</span>
+                          <span className="font-extrabold text-[var(--text)]">{sala.totalReservas}</span>
                         </div>
-                        <div className="bg-white p-2 rounded-lg border border-slate-100">
-                          <span className="text-[10px] text-slate-400 block font-bold">HORAS USO</span>
-                          <span className="font-extrabold text-emerald-800">{sala.horasOcupadas} h</span>
+                        <div className="bg-white p-2 rounded-lg border border-[var(--border)]">
+                          <span className="text-[10px] text-[var(--text-soft)] block font-bold">HORAS USO</span>
+                          <span className="font-extrabold text-[var(--primary-dark)]">{sala.horasOcupadas} h</span>
                         </div>
-                        <div className="bg-white p-2 rounded-lg border border-slate-100">
-                          <span className="text-[10px] text-slate-400 block font-bold">HORA PICO</span>
+                        <div className="bg-white p-2 rounded-lg border border-[var(--border)]">
+                          <span className="text-[10px] text-[var(--text-soft)] block font-bold">HORA PICO</span>
                           <span className="font-bold text-indigo-700">{sala.horaPico}</span>
                         </div>
                       </div>
 
                       <div className="space-y-1">
-                        <div className="flex justify-between text-xs font-semibold text-slate-600">
+                        <div className="flex justify-between text-[13px] font-semibold text-[var(--text-muted)]">
                           <span>Tasa de Ocupación Nominal:</span>
-                          <span className="font-bold text-slate-900">{sala.tasaOcupacion}%</span>
+                          <span className="font-bold text-[var(--text)]">{sala.tasaOcupacion}%</span>
                         </div>
-                        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                        <div className="w-full bg-[var(--border)] rounded-full h-2 overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-500 ${
-                              esSaturada ? 'bg-rose-500' : esModerada ? 'bg-amber-500' : 'bg-emerald-500'
+                              esSaturada ? 'bg-[var(--error-bg)]0' : esModerada ? 'bg-[var(--warning-text)]' : 'bg-[var(--green-soft)]0'
                             }`}
                             style={{ width: `${sala.tasaOcupacion}%` }}
                           />
@@ -767,34 +767,34 @@ export default function AnaliticaPage() {
           <div className="space-y-6">
             {/* KPI Cards de Préstamos */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <div className="bg-white p-4 rounded-[18px] border border-[var(--border)] ">
+                <span className="text-[10px] font-bold text-[var(--text-soft)] uppercase tracking-wider">
                   Total Solicitudes
                 </span>
-                <div className="mt-1 text-2xl font-extrabold text-slate-900">
+                <div className="mt-1 text-2xl font-extrabold text-[var(--text)]">
                   {prestamosData?.total ?? 0}
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-amber-200/90 bg-amber-50/20 shadow-xs">
-                <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">
+              <div className="bg-white p-4 rounded-[18px] border border-[var(--warning-border)]/90 bg-[var(--warning-bg)]/20 ">
+                <span className="text-[10px] font-bold text-[var(--warning-text)] uppercase tracking-wider">
                   En Revisión
                 </span>
-                <div className="mt-1 text-2xl font-extrabold text-amber-800">
+                <div className="mt-1 text-2xl font-extrabold text-[var(--warning-text)]">
                   {prestamosData?.distribucion?.pendiente ?? 0}
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-emerald-200/90 bg-emerald-50/20 shadow-xs">
-                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
+              <div className="bg-white p-4 rounded-[18px] border border-[var(--border)]/90 bg-[var(--green-soft)]/20 ">
+                <span className="text-[10px] font-bold text-[var(--primary)] uppercase tracking-wider">
                   Activos en Curso
                 </span>
-                <div className="mt-1 text-2xl font-extrabold text-emerald-800">
+                <div className="mt-1 text-2xl font-extrabold text-[var(--primary-dark)]">
                   {prestamosData?.distribucion?.activo ?? 0}
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-blue-200/90 bg-blue-50/20 shadow-xs">
+              <div className="bg-white p-4 rounded-[18px] border border-blue-200/90 bg-blue-50/20 ">
                 <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wider">
                   Devueltos
                 </span>
@@ -803,11 +803,11 @@ export default function AnaliticaPage() {
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-rose-200/90 bg-rose-50/20 shadow-xs">
-                <span className="text-[10px] font-bold text-rose-700 uppercase tracking-wider">
+              <div className="bg-white p-4 rounded-[18px] border border-rose-200/90 bg-[var(--error-bg)]/20 ">
+                <span className="text-[10px] font-bold text-[var(--error)] uppercase tracking-wider">
                   Rechazados
                 </span>
-                <div className="mt-1 text-2xl font-extrabold text-rose-800">
+                <div className="mt-1 text-2xl font-extrabold text-[var(--error)]">
                   {prestamosData?.distribucion?.rechazado ?? 0}
                 </div>
               </div>
@@ -815,27 +815,27 @@ export default function AnaliticaPage() {
 
             {/* Gráficas Highcharts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-6 rounded-[18px] border border-[var(--border)] ">
                 <ChartWrapper options={prestamosPieOptions} />
               </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-6 rounded-[18px] border border-[var(--border)] ">
                 <ChartWrapper options={prestamosTiposOptions} />
               </div>
             </div>
 
             {/* Listado de Solicitudes Filtradas */}
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-              <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 text-sm">
+            <div className="bg-white rounded-[18px] border border-[var(--border)]  overflow-hidden">
+              <div className="p-4 border-b border-[var(--border)] bg-[var(--background)] flex items-center justify-between">
+                <h4 className="font-bold text-[var(--text)] text-sm">
                   Trazabilidad de Solicitudes ({prestamosData?.data?.length ?? 0} registros)
                 </h4>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse text-[13px]">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                    <tr className="border-b border-[var(--border)] bg-[var(--background)] text-[var(--text-muted)] font-bold uppercase tracking-wider text-[10px]">
                       <th className="p-3">Solicitante</th>
                       <th className="p-3">Recurso / Espacio</th>
                       <th className="p-3">Laboratorio</th>
@@ -843,30 +843,30 @@ export default function AnaliticaPage() {
                       <th className="p-3">Estado</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium">
+                  <tbody className="divide-y divide-[var(--border)] font-medium">
                     {(prestamosData?.data || []).map((sol: any) => (
-                      <tr key={sol.id} className="hover:bg-slate-50/60 transition-colors">
+                      <tr key={sol.id} className="hover:bg-[var(--background)]/60 transition-colors">
                         <td className="p-3">
-                          <div className="font-bold text-slate-900">{sol.userNombre}</div>
-                          <div className="text-[11px] text-slate-400">{sol.userEmail}</div>
+                          <div className="font-bold text-[var(--text)]">{sol.userNombre}</div>
+                          <div className="text-[11px] text-[var(--text-soft)]">{sol.userEmail}</div>
                         </td>
-                        <td className="p-3 font-semibold text-slate-800">
+                        <td className="p-3 font-semibold text-[var(--text)]">
                           {sol.articuloNombre || 'Reserva de Sala'}
                         </td>
-                        <td className="p-3 text-emerald-800 font-semibold">{sol.salaNombre}</td>
-                        <td className="p-3 text-slate-600">
+                        <td className="p-3 text-[var(--primary-dark)] font-semibold">{sol.salaNombre}</td>
+                        <td className="p-3 text-[var(--text-muted)]">
                           {sol.fechaInicio} al {sol.fechaFin}
                         </td>
                         <td className="p-3">
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
                               sol.estado === 'activo'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                ? 'bg-[var(--green-soft)] text-[var(--primary-dark)] border-[var(--border)]'
                                 : sol.estado === 'pendiente'
-                                ? 'bg-amber-50 text-amber-800 border-amber-300'
+                                ? 'bg-[var(--warning-bg)] text-[var(--warning-text)] border-[var(--warning-border)]'
                                 : sol.estado === 'devuelto'
                                 ? 'bg-blue-50 text-blue-800 border-blue-300'
-                                : 'bg-rose-50 text-rose-800 border-rose-300'
+                                : 'bg-[var(--error-bg)] text-[var(--error)] border-[var(--error-bg)]'
                             }`}
                           >
                             {sol.estado}
@@ -888,65 +888,65 @@ export default function AnaliticaPage() {
           <div className="space-y-6">
             {/* KPI Cards Demográficas */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-blue-200/80 shadow-xs">
+              <div className="bg-white p-5 rounded-[18px] border border-blue-200/80 ">
                 <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider">
                   Masculino
                 </span>
                 <div className="mt-2 text-2xl font-extrabold text-blue-900">
                   {segmentadoData?.desgloseGenero?.Masculino ?? 0} solicitudes
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Préstamos tramitados</p>
+                <p className="text-[13px] text-[var(--text-soft)] mt-1">Préstamos tramitados</p>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-pink-200/80 shadow-xs">
+              <div className="bg-white p-5 rounded-[18px] border border-pink-200/80 ">
                 <span className="text-[11px] font-bold text-pink-600 uppercase tracking-wider">
                   Femenino
                 </span>
                 <div className="mt-2 text-2xl font-extrabold text-pink-900">
                   {segmentadoData?.desgloseGenero?.Femenino ?? 0} solicitudes
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Préstamos tramitados</p>
+                <p className="text-[13px] text-[var(--text-soft)] mt-1">Préstamos tramitados</p>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-purple-200/80 shadow-xs">
+              <div className="bg-white p-5 rounded-[18px] border border-purple-200/80 ">
                 <span className="text-[11px] font-bold text-purple-600 uppercase tracking-wider">
                   Otro / No Binario
                 </span>
                 <div className="mt-2 text-2xl font-extrabold text-purple-900">
                   {segmentadoData?.desgloseGenero?.Otro ?? 0} solicitudes
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Préstamos tramitados</p>
+                <p className="text-[13px] text-[var(--text-soft)] mt-1">Préstamos tramitados</p>
               </div>
             </div>
 
             {/* Gráficas Highcharts de Segmentación Demográfica y Espacial */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="lg:col-span-2 bg-white p-6 rounded-[18px] border border-[var(--border)] ">
                 <ChartWrapper options={segmentadoStackedOptions} />
               </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs">
+              <div className="bg-white p-6 rounded-[18px] border border-[var(--border)] ">
                 <ChartWrapper options={segmentadoPieOptions} />
               </div>
             </div>
 
             {/* Tabla Segmentada por Usuario Individual */}
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-              <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+            <div className="bg-white rounded-[18px] border border-[var(--border)]  overflow-hidden">
+              <div className="p-4 border-b border-[var(--border)] bg-[var(--background)] flex items-center justify-between">
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">
+                  <h4 className="font-bold text-[var(--text)] text-sm">
                     Auditoría Demográfica y de Uso por Usuario
                   </h4>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-[13px] text-[var(--text-soft)]">
                     Frecuencia de solicitud, género, rol académico y laboratorios frecuentados
                   </p>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse text-[13px]">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                    <tr className="border-b border-[var(--border)] bg-[var(--background)] text-[var(--text-muted)] font-bold uppercase tracking-wider text-[10px]">
                       <th className="p-3">Usuario</th>
                       <th className="p-3">Género</th>
                       <th className="p-3">Rol</th>
@@ -955,12 +955,12 @@ export default function AnaliticaPage() {
                       <th className="p-3">Laboratorios Frecuentados</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium">
+                  <tbody className="divide-y divide-[var(--border)] font-medium">
                     {(segmentadoData?.usuariosResumen || []).map((u: any) => (
-                      <tr key={u.id} className="hover:bg-slate-50/60 transition-colors">
+                      <tr key={u.id} className="hover:bg-[var(--background)]/60 transition-colors">
                         <td className="p-3">
-                          <div className="font-bold text-slate-900">{u.nombre}</div>
-                          <div className="text-[11px] text-slate-400">{u.email}</div>
+                          <div className="font-bold text-[var(--text)]">{u.nombre}</div>
+                          <div className="text-[11px] text-[var(--text-soft)]">{u.email}</div>
                         </td>
 
                         <td className="p-3">
@@ -982,24 +982,24 @@ export default function AnaliticaPage() {
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
                               u.rol === 'docente'
                                 ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                                : 'bg-slate-100 text-slate-700 border-slate-200'
+                                : 'bg-[var(--green-soft)] text-[var(--text-muted)] border-[var(--border)]'
                             }`}
                           >
                             {u.rol}
                           </span>
                         </td>
 
-                        <td className="p-3 font-extrabold text-slate-900">
+                        <td className="p-3 font-extrabold text-[var(--text)]">
                           {u.totalSolicitudes} trámites
                         </td>
 
                         <td className="p-3">
-                          <span className="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <span className="font-bold text-[var(--primary-dark)] bg-[var(--green-soft)] px-2 py-0.5 rounded border border-[var(--border)]">
                             {u.horas} horas
                           </span>
                         </td>
 
-                        <td className="p-3 text-[11px] text-slate-600 max-w-xs">
+                        <td className="p-3 text-[11px] text-[var(--text-muted)] max-w-xs">
                           {u.salasUtilizadas?.join(', ') || 'Sin salas'}
                         </td>
                       </tr>

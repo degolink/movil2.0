@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const [salasSnap, solicitudesSnap, articulosSnap] = await Promise.all([
       adminDb.collection('salas').get(),
-      adminDb.collection('solicitudes').get(),
+      adminDb.collection('prestamos').get(),
       adminDb.collection('articulos').get(),
     ]);
 
@@ -27,7 +27,7 @@ export async function GET() {
         return acc + (diffDays * 4);
       }, 0);
 
-      // Tasa de ocupación estimada basada en capacidad y horas operativas semanales (48h/semana)
+      // Tasa de ocupaciÃ³n estimada basada en capacidad y horas operativas semanales (48h/semana)
       const tasaOcupacion = Math.min(98, Math.max(12, Math.round((horasOcupadas / 48) * 100)));
 
       const articulosDeSala = articulos.filter(a => a.salaId === sala.id);
@@ -47,7 +47,7 @@ export async function GET() {
       };
     });
 
-    // Ordenar de mayor a menor tasa de saturación/demanda
+    // Ordenar de mayor a menor tasa de saturaciÃ³n/demanda
     reportes.sort((a, b) => b.tasaOcupacion - a.tasaOcupacion);
 
     return NextResponse.json({ success: true, data: reportes });

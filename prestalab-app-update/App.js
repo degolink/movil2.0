@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
-import { PaperProvider, ActivityIndicator as PaperActivityIndicator, MD3LightTheme } from "react-native-paper";
+import { PaperProvider, MD3LightTheme } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   useFonts,
@@ -11,8 +12,19 @@ import {
   Inter_700Bold,
 } from "@expo-google-fonts/inter";
 import { UserProvider, useUser } from "./src/contexts/userContext";
+import SplashScreen from "./src/components/SplashScreen";
 import AuthStack from "./src/navegations/authStack";
 import MainStack from "./src/navegations/mainStack";
+import { initDb } from "./src/data/localDb";
+import { iniciarSync } from "./src/sync/connectivity";
+
+// SQLite es la fuente de lectura: se inicializa antes del primer render.
+// Si el binario no trae el módulo nativo, la app sigue funcionando (sin caché).
+try {
+  initDb();
+} catch (e) {
+  console.warn("SQLite no disponible:", e?.message);
+}
 
 const theme = {
   ...MD3LightTheme,
@@ -61,13 +73,17 @@ const theme = {
 
 function AppContent() {
   const { user, loading } = useUser();
+  const [splashDone, setSplashDone] = useState(false);
 
-  if (loading) {
-    return (
-      <View style={[styles.loadingContainer, { backgroundColor: '#F5FBF6' }]}>
-        <PaperActivityIndicator size="large" color="#256B42" />
-      </View>
-    );
+  // Offline-first: push de la outbox + pull de catálogo/salas/préstamos
+  useEffect(() => {
+    if (!user?.uid) return undefined;
+    return iniciarSync(user.uid);
+  }, [user?.uid]);
+
+  // Splash animado: cubre la carga de fuentes + sesión (mín. 4.5s)
+  if (!splashDone) {
+    return <SplashScreen ready={!loading} onFinish={() => setSplashDone(true)} />;
   }
 
   return (
@@ -85,12 +101,9 @@ export default function App() {
     Inter_700Bold,
   });
 
+  // Fondo neutro mientras cargan las fuentes (evita parpadeo de tipografía)
   if (!fontsLoaded) {
-    return (
-      <View style={[styles.loadingContainer, { backgroundColor: '#F5FBF6' }]}>
-        <PaperActivityIndicator size="large" color="#256B42" />
-      </View>
-    );
+    return <View style={[styles.loadingContainer, { backgroundColor: "#F5FBF6" }]} />;
   }
 
   return (

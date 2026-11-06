@@ -75,178 +75,178 @@ export default function DashboardPage() {
         {/* KPI Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Card 1: Pendientes */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-shadow">
+          <div className="bg-white p-6 rounded-[18px] border border-[var(--border)]  hover: transition-shadow">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <span className="text-[13px] font-semibold text-[var(--text-soft)] uppercase tracking-wider">
                 Solicitudes Pendientes
               </span>
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
+              <div className="w-10 h-10 rounded-[14px] bg-[var(--warning-bg)] text-[var(--warning-text)] flex items-center justify-center border border-[var(--warning-border)]">
                 <Clock className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-slate-900">
+              <span className="text-3xl font-extrabold text-[var(--text)]">
                 {stats?.pendientes ?? 0}
               </span>
-              <span className="text-xs text-amber-700 bg-amber-100/60 font-medium px-2 py-0.5 rounded-full">
+              <span className="text-[13px] text-[var(--warning-text)] bg-[var(--warning-bg)] font-medium px-2 py-0.5 rounded-full">
                 Por evaluar
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-[13px] text-[var(--text-soft)] mt-2">
               Requieren decisión del Gestor de Laboratorio
             </p>
           </div>
 
           {/* Card 2: Préstamos Activos */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-shadow">
+          <div className="bg-white p-6 rounded-[18px] border border-[var(--border)]  hover: transition-shadow">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <span className="text-[13px] font-semibold text-[var(--text-soft)] uppercase tracking-wider">
                 Préstamos Activos
               </span>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
+              <div className="w-10 h-10 rounded-[14px] bg-[var(--green-soft)] text-[var(--primary)] flex items-center justify-center border border-[var(--border)]">
                 <CheckCircle className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-slate-900">
+              <span className="text-3xl font-extrabold text-[var(--text)]">
                 {stats?.activos ?? 0}
               </span>
-              <span className="text-xs text-emerald-700 bg-emerald-100/60 font-medium px-2 py-0.5 rounded-full">
+              <span className="text-[13px] text-[var(--primary)] bg-[var(--green-soft-strong)]/60 font-medium px-2 py-0.5 rounded-full">
                 En uso
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-[13px] text-[var(--text-soft)] mt-2">
               {stats?.reasignadas ?? 0} préstamos con cambio de sala
             </p>
           </div>
 
           {/* Card 3: Salas y Laboratorios */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-shadow">
+          <div className="bg-white p-6 rounded-[18px] border border-[var(--border)]  hover: transition-shadow">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <span className="text-[13px] font-semibold text-[var(--text-soft)] uppercase tracking-wider">
                 Salas y Laboratorios
               </span>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200">
+              <div className="w-10 h-10 rounded-[14px] bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200">
                 <DoorOpen className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-slate-900">
+              <span className="text-3xl font-extrabold text-[var(--text)]">
                 {stats?.totalSalas ?? 0}
               </span>
-              <span className="text-xs text-blue-700 bg-blue-100/60 font-medium px-2 py-0.5 rounded-full">
+              <span className="text-[13px] text-blue-700 bg-blue-100/60 font-medium px-2 py-0.5 rounded-full">
                 {stats?.salasDisponibles ?? 0} libres
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-[13px] text-[var(--text-soft)] mt-2">
               {stats?.salasMantenimiento ?? 0} en mantenimiento técnico
             </p>
           </div>
 
           {/* Card 4: Inventario Total */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-shadow">
+          <div className="bg-white p-6 rounded-[18px] border border-[var(--border)]  hover: transition-shadow">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <span className="text-[13px] font-semibold text-[var(--text-soft)] uppercase tracking-wider">
                 Activos e Inventario
               </span>
-              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-200">
+              <div className="w-10 h-10 rounded-[14px] bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-200">
                 <Boxes className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-slate-900">
+              <span className="text-3xl font-extrabold text-[var(--text)]">
                 {stats?.totalArticulos ?? 0}
               </span>
-              <span className="text-xs text-purple-700 bg-purple-100/60 font-medium px-2 py-0.5 rounded-full">
+              <span className="text-[13px] text-purple-700 bg-purple-100/60 font-medium px-2 py-0.5 rounded-full">
                 Unidades
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-[13px] text-[var(--text-soft)] mt-2">
               {stats?.articulosEnPrestamo ?? 0} prestados a usuarios
             </p>
           </div>
         </div>
 
         {/* Section: Solicitudes Pendientes de Atención Inmediata */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-          <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="bg-white rounded-[18px] border border-[var(--border)]  overflow-hidden">
+          <div className="p-6 border-b border-[var(--border)] flex items-center justify-between bg-[var(--background)]/50">
             <div>
-              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-[var(--text)] flex items-center gap-2">
                 <span>Bandeja de Decisiones del Gestor</span>
                 {pendientesFiltradas.length > 0 && (
-                  <span className="text-xs font-semibold bg-amber-500 text-white px-2 py-0.5 rounded-full">
+                  <span className="text-[13px] font-semibold bg-[var(--warning-text)] text-white px-2 py-0.5 rounded-full">
                     {pendientesFiltradas.length} pendientes
                   </span>
                 )}
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-[13px] text-[var(--text-soft)] mt-0.5">
                 Evalúa, aprueba, rechaza con justificación o reasigna salas de laboratorio.
               </p>
             </div>
 
             <Link
               href="/prestamos"
-              className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 transition-colors"
+              className="text-[13px] font-semibold text-[var(--primary)] hover:text-[var(--primary-dark)] flex items-center gap-1.5 transition-colors"
             >
               Ver todas en Préstamos <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           {loading ? (
-            <div className="p-8 text-center text-sm text-slate-500 flex items-center justify-center gap-2">
-              <RefreshCw className="w-4 h-4 animate-spin text-emerald-600" /> Cargando solicitudes...
+            <div className="p-8 text-center text-sm text-[var(--text-soft)] flex items-center justify-center gap-2">
+              <RefreshCw className="w-4 h-4 animate-spin text-[var(--primary)]" /> Cargando solicitudes...
             </div>
           ) : pendientesFiltradas.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-full bg-[var(--green-soft)] text-[var(--primary)] flex items-center justify-center mx-auto mb-3">
                 <Check className="w-6 h-6" />
               </div>
-              <h4 className="font-semibold text-slate-800 text-sm">
+              <h4 className="font-semibold text-[var(--text)] text-sm">
                 No hay solicitudes pendientes en este momento
               </h4>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+              <p className="text-[13px] text-[var(--text-soft)] mt-1 max-w-sm mx-auto">
                 Todas las solicitudes de tus laboratorios asignados han sido evaluadas y resueltas.
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-[var(--border)]">
               {pendientesFiltradas.slice(0, 3).map((sol) => (
                 <div
                   key={sol.id}
-                  className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/70 transition-colors"
+                  className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[var(--background)]/70 transition-colors"
                 >
                   <div className="space-y-1.5 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 capitalize">
+                      <span className="text-[13px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 capitalize">
                         {sol.userRol}
                       </span>
-                      <h4 className="font-bold text-slate-900 text-sm">
+                      <h4 className="font-bold text-[var(--text)] text-sm">
                         {sol.userNombre}
                       </h4>
-                      <span className="text-xs text-slate-400">•</span>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-[13px] text-[var(--text-soft)]">•</span>
+                      <span className="text-[13px] text-[var(--text-soft)]">
                         {sol.userEmail}
                       </span>
                     </div>
 
-                    <div className="text-xs text-slate-700 flex flex-wrap items-center gap-x-4 gap-y-1 font-medium">
+                    <div className="text-[13px] text-[var(--text-muted)] flex flex-wrap items-center gap-x-4 gap-y-1 font-medium">
                       <span>
-                        <strong className="text-slate-900">Recurso:</strong>{' '}
+                        <strong className="text-[var(--text)]">Recurso:</strong>{' '}
                         {sol.articuloNombre || 'Reserva de Sala'} ({sol.cantidad} ud)
                       </span>
                       <span>
-                        <strong className="text-slate-900">Sala solicitada:</strong>{' '}
-                        <span className="text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded font-semibold border border-emerald-200/60">
+                        <strong className="text-[var(--text)]">Sala solicitada:</strong>{' '}
+                        <span className="text-[var(--primary-dark)] bg-[var(--green-soft)] px-2 py-0.5 rounded font-semibold border border-[var(--border)]/60">
                           {sol.salaNombre}
                         </span>
                       </span>
                       <span>
-                        <strong className="text-slate-900">Fechas:</strong>{' '}
+                        <strong className="text-[var(--text)]">Fechas:</strong>{' '}
                         {sol.fechaInicio} al {sol.fechaFin}
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-500 italic bg-slate-50 p-2 rounded-lg border border-slate-200/50">
+                    <p className="text-[13px] text-[var(--text-soft)] italic bg-[var(--background)] p-2 rounded-lg border border-[var(--border)]/50">
                       "{sol.motivo}"
                     </p>
                   </div>
@@ -254,7 +254,7 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2 shrink-0">
                     <Link
                       href="/prestamos"
-                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-[14px] text-[13px] font-semibold bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white  transition-colors flex items-center gap-1.5"
                     >
                       Evaluar en Bandeja <ArrowUpRight className="w-3.5 h-3.5" />
                     </Link>
@@ -267,13 +267,13 @@ export default function DashboardPage() {
 
         {/* Section 2: Estado de Laboratorios en Tiempo Real */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6">
+          <div className="lg:col-span-2 bg-white rounded-[18px] border border-[var(--border)]  p-6">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Salas y Espacios Académicos</h3>
-                <p className="text-xs text-slate-500">Supervisión física y capacidad actual</p>
+                <h3 className="font-bold text-[var(--text)] text-base">Salas y Espacios Académicos</h3>
+                <p className="text-[13px] text-[var(--text-soft)]">Supervisión física y capacidad actual</p>
               </div>
-              <Link href="/salas" className="text-xs text-emerald-700 font-semibold hover:underline">
+              <Link href="/salas" className="text-[13px] text-[var(--primary)] font-semibold hover:underline">
                 Gestionar salas →
               </Link>
             </div>
@@ -282,31 +282,31 @@ export default function DashboardPage() {
               {salas.map((sala) => (
                 <div
                   key={sala.id}
-                  className="p-4 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all bg-slate-50/50"
+                  className="p-4 rounded-[14px] border border-[var(--border)] hover:border-[var(--border)] transition-all bg-[var(--background)]/50"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[11px] font-bold text-[var(--primary-dark)] bg-[var(--green-soft-strong)]/70 px-2 py-0.5 rounded border border-[var(--border)]">
                         {sala.codigo}
                       </span>
-                      <h4 className="font-semibold text-slate-800 text-xs mt-1.5 line-clamp-1">
+                      <h4 className="font-semibold text-[var(--text)] text-[13px] mt-1.5 line-clamp-1">
                         {sala.nombre}
                       </h4>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{sala.edificio}</p>
+                      <p className="text-[11px] text-[var(--text-soft)] mt-0.5">{sala.edificio}</p>
                     </div>
 
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
                       sala.estado === 'disponible'
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        ? 'bg-[var(--green-soft-strong)] text-[var(--primary-dark)] border border-[var(--border)]'
                         : sala.estado === 'ocupado'
-                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                        : 'bg-rose-100 text-rose-800 border border-rose-300'
+                        ? 'bg-[var(--warning-bg)] text-[var(--warning-text)] border border-[var(--warning-border)]'
+                        : 'bg-[var(--error-bg)] text-[var(--error)] border border-[var(--error-bg)]'
                     }`}>
                       {sala.estado}
                     </span>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-600">
+                  <div className="mt-3 pt-3 border-t border-[var(--border)]/60 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
                     <span>Capacidad: <strong>{sala.capacidad} estudiantes</strong></span>
                     <span>Gestor: <strong>{sala.gestorNombre?.split(' ')[1] || 'Asignado'}</strong></span>
                   </div>
@@ -316,36 +316,36 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick Info & Matriz de Roles */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 flex flex-col justify-between">
+          <div className="bg-white rounded-[18px] border border-[var(--border)]  p-6 flex flex-col justify-between">
             <div>
-              <h3 className="font-bold text-slate-900 text-base mb-1">Matriz de Roles Activa</h3>
-              <p className="text-xs text-slate-500 mb-4">
+              <h3 className="font-bold text-[var(--text)] text-base mb-1">Matriz de Roles Activa</h3>
+              <p className="text-[13px] text-[var(--text-soft)] mb-4">
                 Reglas de control de acceso aplicadas según tu sesión:
               </p>
 
               <div className="space-y-3">
-                <div className={`p-3 rounded-xl border text-xs ${
+                <div className={`p-3 rounded-[14px] border text-[13px] ${
                   activeUser.rol === 'admin'
-                    ? 'bg-emerald-50/80 border-emerald-300 text-emerald-900'
-                    : 'bg-slate-50 border-slate-200 text-slate-600'
+                    ? 'bg-[var(--green-soft)] border-[var(--border)] text-[var(--primary-dark)]'
+                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--text-muted)]'
                 }`}>
                   <p className="font-bold">Administrador del Sistema</p>
                   <p className="text-[11px] mt-0.5">Acceso irrestricto, configuración global, gestión de usuarios y auditoría.</p>
                 </div>
 
-                <div className={`p-3 rounded-xl border text-xs ${
+                <div className={`p-3 rounded-[14px] border text-[13px] ${
                   activeUser.rol === 'gestor'
-                    ? 'bg-emerald-50/80 border-emerald-300 text-emerald-900'
-                    : 'bg-slate-50 border-slate-200 text-slate-600'
+                    ? 'bg-[var(--green-soft)] border-[var(--border)] text-[var(--primary-dark)]'
+                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--text-muted)]'
                 }`}>
                   <p className="font-bold">Gestor de Laboratorio</p>
                   <p className="text-[11px] mt-0.5">Evaluación de reservas (aprobar/denegar con motivo), reasignación de salas.</p>
                 </div>
 
-                <div className={`p-3 rounded-xl border text-xs ${
+                <div className={`p-3 rounded-[14px] border text-[13px] ${
                   activeUser.rol === 'estudiante' || activeUser.rol === 'docente'
-                    ? 'bg-emerald-50/80 border-emerald-300 text-emerald-900'
-                    : 'bg-slate-50 border-slate-200 text-slate-600'
+                    ? 'bg-[var(--green-soft)] border-[var(--border)] text-[var(--primary-dark)]'
+                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--text-muted)]'
                 }`}>
                   <p className="font-bold">Estudiante / Docente</p>
                   <p className="text-[11px] mt-0.5">Solicitar préstamos, consultar inventario y consultar historial propio.</p>
@@ -353,9 +353,9 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <div className="mt-6 pt-4 border-t border-[var(--border)] flex items-center justify-between text-[13px] text-[var(--text-soft)]">
               <span>Next.js API Routes</span>
-              <span className="font-semibold text-emerald-700">RESTful Active</span>
+              <span className="font-semibold text-[var(--primary)]">RESTful Active</span>
             </div>
           </div>
         </div>

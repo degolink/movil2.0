@@ -4,7 +4,7 @@ import { adminDb } from '@/lib/firebase-admin';
 export async function GET() {
   try {
     const [solicitudesSnap, salasSnap, articulosSnap, usuariosSnap] = await Promise.all([
-      adminDb.collection('solicitudes').get(),
+      adminDb.collection('prestamos').get(),
       adminDb.collection('salas').get(),
       adminDb.collection('articulos').get(),
       adminDb.collection('usuarios').get(),
