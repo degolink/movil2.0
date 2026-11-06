@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const [usuariosSnap, solicitudesSnap] = await Promise.all([
       adminDb.collection('usuarios').get(),
-      adminDb.collection('solicitudes').get(),
+      adminDb.collection('prestamos').get(),
     ]);
 
     const usuarios: Usuario[] = usuariosSnap.docs.map(d => ({ id: d.id, ...d.data() } as Usuario));
@@ -21,12 +21,12 @@ export async function GET() {
       const prestamosDevueltos = userSols.filter(s => s.estado === 'devuelto').length;
       const prestamosRechazados = userSols.filter(s => s.estado === 'rechazado').length;
 
-      // Calcular estimación de horas reservadas (suponiendo 3 horas por reserva estándar o diferencia de fechas)
+      // Calcular estimaciÃ³n de horas reservadas (suponiendo 3 horas por reserva estÃ¡ndar o diferencia de fechas)
       const horasReservadas = userSols.reduce((sum, s) => {
         if (!s.fechaInicio || !s.fechaFin) return sum + 3;
         const diffMs = new Date(s.fechaFin).getTime() - new Date(s.fechaInicio).getTime();
         const diffDays = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24)));
-        return sum + (diffDays * 4); // 4 horas promedio de jornada de lab por día
+        return sum + (diffDays * 4); // 4 horas promedio de jornada de lab por dÃ­a
       }, 0);
 
       const tasaCumplimiento = totalPrestamos > 0
@@ -47,7 +47,7 @@ export async function GET() {
       };
     });
 
-    // Estadísticas globales agregadas
+    // EstadÃ­sticas globales agregadas
     const resumen = {
       totalEstudiantes: estudiantesYDocentes.filter(u => u.rol === 'estudiante').length,
       totalDocentes: estudiantesYDocentes.filter(u => u.rol === 'docente').length,

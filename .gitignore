@@ -13,6 +13,7 @@ web-build/
 
 # Entornos y credenciales sensibles
 .env*
+!**/.env.example
 serviceAccountKey.json
 *.pem
 *.key

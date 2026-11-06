@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
     const [salasSnap, solicitudesSnap] = await Promise.all([
       adminDb.collection('salas').get(),
-      adminDb.collection('solicitudes').get(),
+      adminDb.collection('prestamos').get(),
     ]);
 
     let salas: Sala[] = salasSnap.docs.map(d => ({ id: d.id, ...d.data() } as Sala));

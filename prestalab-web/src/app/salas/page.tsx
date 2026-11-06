@@ -143,8 +143,8 @@ export default function SalasPage() {
       <main className="p-8 space-y-6 max-w-7xl mx-auto w-full">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-slate-900 text-lg">Catálogo Maestro de Laboratorios</h3>
-            <p className="text-xs text-slate-500">
+            <h3 className="font-bold text-[var(--text)] text-lg">Catálogo Maestro de Laboratorios</h3>
+            <p className="text-[13px] text-[var(--text-soft)]">
               {salas.length} espacios académicos registrados en la plataforma
             </p>
           </div>
@@ -152,7 +152,7 @@ export default function SalasPage() {
           {canEdit && (
             <button
               onClick={() => openModal()}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white  transition-colors"
             >
               <Plus className="w-4 h-4" /> Agregar Laboratorio
             </button>
@@ -160,26 +160,26 @@ export default function SalasPage() {
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-sm text-slate-500">Cargando salas...</div>
+          <div className="p-12 text-center text-sm text-[var(--text-soft)]">Cargando salas...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {salas.map((sala) => (
               <div
                 key={sala.id}
-                className="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all p-6 flex flex-col justify-between"
+                className="bg-white rounded-[18px] border border-[var(--border)]  hover: transition-all p-6 flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
-                    <span className="text-xs font-extrabold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span className="text-[13px] font-extrabold px-2.5 py-1 rounded-lg bg-[var(--green-soft)] text-[var(--primary-dark)] border border-[var(--border)]">
                       {sala.codigo}
                     </span>
                     <span
                       className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border ${
                         sala.estado === 'disponible'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                          ? 'bg-[var(--green-soft)] text-[var(--primary-dark)] border-[var(--border)]'
                           : sala.estado === 'ocupado'
-                          ? 'bg-amber-50 text-amber-800 border-amber-300'
-                          : 'bg-rose-50 text-rose-800 border-rose-300'
+                          ? 'bg-[var(--warning-bg)] text-[var(--warning-text)] border-[var(--warning-border)]'
+                          : 'bg-[var(--error-bg)] text-[var(--error)] border-[var(--error-bg)]'
                       }`}
                     >
                       {sala.estado}
@@ -187,39 +187,39 @@ export default function SalasPage() {
                   </div>
 
                   <div>
-                    <h4 className="font-bold text-slate-900 text-base">{sala.nombre}</h4>
-                    <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    <h4 className="font-bold text-[var(--text)] text-base">{sala.nombre}</h4>
+                    <p className="text-[13px] text-[var(--text-soft)] flex items-center gap-1 mt-1">
+                      <MapPin className="w-3.5 h-3.5 text-[var(--text-soft)] shrink-0" />
                       <span>{sala.edificio}</span>
                     </p>
                   </div>
 
                   {sala.descripcion && (
-                    <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200/60 leading-relaxed">
+                    <p className="text-[13px] text-[var(--text-muted)] bg-[var(--background)] p-3 rounded-[14px] border border-[var(--border)]/60 leading-relaxed">
                       {sala.descripcion}
                     </p>
                   )}
 
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs text-slate-600">
-                    <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200/50">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--border)] text-[13px] text-[var(--text-muted)]">
+                    <div className="bg-[var(--background)] p-2.5 rounded-lg border border-[var(--border)]/50">
+                      <span className="text-[10px] uppercase font-bold text-[var(--text-soft)] block">
                         Capacidad
                       </span>
-                      <strong className="text-slate-900">{sala.capacidad} estudiantes</strong>
+                      <strong className="text-[var(--text)]">{sala.capacidad} estudiantes</strong>
                     </div>
-                    <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200/50">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                    <div className="bg-[var(--background)] p-2.5 rounded-lg border border-[var(--border)]/50">
+                      <span className="text-[10px] uppercase font-bold text-[var(--text-soft)] block">
                         Especialidad
                       </span>
-                      <strong className="text-slate-900">{sala.tipo}</strong>
+                      <strong className="text-[var(--text)]">{sala.tipo}</strong>
                     </div>
                   </div>
 
-                  <div className="text-xs text-slate-600">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  <div className="text-[13px] text-[var(--text-muted)]">
+                    <span className="text-[10px] uppercase font-bold text-[var(--text-soft)] block">
                       Gestor Responsable
                     </span>
-                    <strong className="text-emerald-900 font-semibold">
+                    <strong className="text-[var(--primary-dark)] font-semibold">
                       {sala.gestorNombre || 'Sin gestor asignado'}
                     </strong>
                   </div>
@@ -227,14 +227,14 @@ export default function SalasPage() {
 
                 {/* Acciones de Sala */}
                 {canEdit && (
-                  <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+                  <div className="mt-5 pt-4 border-t border-[var(--border)] flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => toggleEstado(sala, 'disponible')}
                         className={`text-[10px] px-2 py-1 rounded font-bold ${
                           sala.estado === 'disponible'
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-[var(--primary)] text-white'
+                            : 'bg-[var(--green-soft)] text-[var(--text-muted)] hover:bg-[var(--border)]'
                         }`}
                       >
                         Libre
@@ -243,8 +243,8 @@ export default function SalasPage() {
                         onClick={() => toggleEstado(sala, 'ocupado')}
                         className={`text-[10px] px-2 py-1 rounded font-bold ${
                           sala.estado === 'ocupado'
-                            ? 'bg-amber-600 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-[var(--warning-text)] text-white'
+                            : 'bg-[var(--green-soft)] text-[var(--text-muted)] hover:bg-[var(--border)]'
                         }`}
                       >
                         Ocupado
@@ -253,8 +253,8 @@ export default function SalasPage() {
                         onClick={() => toggleEstado(sala, 'mantenimiento')}
                         className={`text-[10px] px-2 py-1 rounded font-bold ${
                           sala.estado === 'mantenimiento'
-                            ? 'bg-rose-600 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-[var(--error)] text-white'
+                            : 'bg-[var(--green-soft)] text-[var(--text-muted)] hover:bg-[var(--border)]'
                         }`}
                       >
                         Mantenimiento
@@ -263,7 +263,7 @@ export default function SalasPage() {
 
                     <button
                       onClick={() => openModal(sala)}
-                      className="p-1.5 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                      className="p-1.5 text-[var(--text-soft)] hover:text-[var(--primary)] hover:bg-[var(--green-soft)] rounded-lg transition-colors"
                       title="Editar parámetros de la sala"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -277,15 +277,15 @@ export default function SalasPage() {
 
         {/* MODAL CREAR / EDITAR SALA */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-            <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="font-bold text-slate-900 text-base">
+          <div className="fixed inset-0 bg-[rgba(24,28,26,0.45)]  flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white rounded-[18px] max-w-lg w-full p-6  border border-[var(--border)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <h3 className="font-bold text-[var(--text)] text-base">
                   {editingSala ? 'Editar Laboratorio' : 'Registrar Nuevo Laboratorio'}
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-[var(--text-soft)] hover:text-[var(--text-muted)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -294,7 +294,7 @@ export default function SalasPage() {
               <form onSubmit={handleSave} className="space-y-3">
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-2">
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Nombre del Laboratorio *
                     </label>
                     <input
@@ -302,12 +302,12 @@ export default function SalasPage() {
                       value={formData.nombre}
                       onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                       placeholder="Ej: Laboratorio de Telecomunicaciones"
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Código *
                     </label>
                     <input
@@ -315,14 +315,14 @@ export default function SalasPage() {
                       value={formData.codigo}
                       onChange={(e) => setFormData({ ...formData, codigo: e.target.value })}
                       placeholder="LAB-201"
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl uppercase"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] uppercase"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                     Ubicación Física / Edificio *
                   </label>
                   <input
@@ -330,14 +330,14 @@ export default function SalasPage() {
                     value={formData.edificio}
                     onChange={(e) => setFormData({ ...formData, edificio: e.target.value })}
                     placeholder="Ej: Edificio de Ingeniería - Bloque B (Piso 2)"
-                    className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                    className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Capacidad Máxima *
                     </label>
                     <input
@@ -346,13 +346,13 @@ export default function SalasPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, capacidad: Number(e.target.value) })
                       }
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                       required
                       min={1}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Tipo / Especialidad
                     </label>
                     <select
@@ -360,7 +360,7 @@ export default function SalasPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, tipo: e.target.value as Sala['tipo'] })
                       }
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl bg-white"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] bg-white"
                     >
                       <option value="Redes">Redes</option>
                       <option value="Electrónica">Electrónica</option>
@@ -374,7 +374,7 @@ export default function SalasPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                     Gestor Responsable del Laboratorio
                   </label>
                   <select
@@ -382,7 +382,7 @@ export default function SalasPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, gestorResponsableId: e.target.value })
                     }
-                    className="w-full text-xs p-2.5 border border-slate-300 rounded-xl bg-white"
+                    className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] bg-white"
                   >
                     <option value="">Sin gestor asignado</option>
                     {gestores.map((gestor) => (
@@ -394,7 +394,7 @@ export default function SalasPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                     Equipamiento y Descripción
                   </label>
                   <textarea
@@ -402,21 +402,21 @@ export default function SalasPage() {
                     value={formData.descripcion}
                     onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                     placeholder="Detalles sobre bancos de trabajo, tomas de corriente, instrumentación..."
-                    className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                    className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border)]">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100"
+                    className="px-4 py-2 text-[13px] font-semibold rounded-[14px] text-[var(--text-muted)] hover:bg-[var(--green-soft)]"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                    className="px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white "
                   >
                     Guardar Laboratorio
                   </button>

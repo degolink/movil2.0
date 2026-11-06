@@ -1,150 +1,173 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Database, RefreshCw, CheckCircle2, AlertCircle, LogOut, Bell, X, Check } from 'lucide-react';
+import {
+  Database,
+  Bell,
+  Check,
+  LogOut,
+  CheckCircle2,
+} from 'lucide-react';
 import { useActiveRole } from '@/context/RoleContext';
 
-export default function Header({ title, subtitle }: { title: string; subtitle?: string }) {
-  const { activeUser, logout } = useActiveRole();
+/**
+ * Barra superior — mismo lenguaje que la app móvil:
+ * fondo blanco, borde inferior suave, título grande y acciones discretas.
+ */
+export default function Header({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
+  const { activeUser, currentUser, logout } = useActiveRole();
   const [seeding, setSeeding] = useState(false);
   const [seedStatus, setSeedStatus] = useState<string | null>(null);
-
-  // Notificaciones
-  const [notificaciones, setNotificaciones] = useState<any[]>([]);
+  const [notificaciones, setNotificaciones] = useState<
+    Array<{ id: string; titulo: string; mensaje: string; leida: boolean; fecha?: string }>
+  >([]);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
 
   const fetchNotificaciones = async () => {
     try {
       const res = await fetch('/api/notificaciones');
       const data = await res.json();
-      if (data.success) {
-        setNotificaciones(data.data || []);
-      }
+      if (data.success) setNotificaciones(data.data || []);
     } catch (e) {
-      console.warn('Error fetching notificaciones:', e);
+      // silencioso: el centro de alertas es secundario
     }
   };
 
   useEffect(() => {
     fetchNotificaciones();
-    const interval = setInterval(fetchNotificaciones, 25000);
+    const interval = setInterval(fetchNotificaciones, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  const unreadCount = notificaciones.filter(n => !n.leida).length;
+  const unread = notificaciones.filter((n) => !n.leida).length;
 
   const markAllAsRead = async () => {
-    try {
-      await Promise.all(
-        notificaciones.filter(n => !n.leida).map(n =>
+    await Promise.all(
+      notificaciones
+        .filter((n) => !n.leida)
+        .map((n) =>
           fetch('/api/notificaciones', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: n.id, leida: true }),
-          })
-        )
-      );
-      setNotificaciones(prev => prev.map(n => ({ ...n, leida: true })));
-    } catch (err) {
-      console.error(err);
-    }
+          }),
+        ),
+    );
+    setNotificaciones((prev) => prev.map((n) => ({ ...n, leida: true })));
   };
 
   const handleSeed = async () => {
-    if (!confirm('¿Deseas poblar la base de datos de PrestaLab con los laboratorios, inventarios, usuarios y solicitudes demo iniciales?')) {
-      return;
-    }
-
+    if (!confirm('¿Deseas poblar la base de datos con datos demo?')) return;
     setSeeding(true);
     setSeedStatus(null);
     try {
       const res = await fetch('/api/seed', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        setSeedStatus('¡Base de datos inicializada con éxito!');
-        setTimeout(() => {
-          window.location.reload();
-        }, 1200);
+        setSeedStatus('Datos demo cargados');
+        setTimeout(() => window.location.reload(), 1000);
       } else {
         setSeedStatus(`Error: ${data.error}`);
       }
-    } catch (err: any) {
-      setSeedStatus(`Error: ${err.message}`);
+    } catch (err) {
+      setSeedStatus('Error de red');
     } finally {
       setSeeding(false);
     }
   };
 
+  const rolPortal = activeUser.rol === 'admin' || activeUser.rol === 'gestor';
+
   return (
-    <header className="bg-white border-b border-slate-200 px-8 py-5 flex items-center justify-between shadow-xs relative z-30">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{title}</h2>
-        {subtitle && <p className="text-sm text-slate-500 mt-0.5">{subtitle}</p>}
+    <header
+      className="sticky top-0 z-30 px-6 lg:px-10 py-5 flex items-center justify-between gap-4"
+      style={{
+        background: 'rgba(245, 251, 246, 0.9)',
+        backdropFilter: 'blur(8px)',
+        borderBottom: '1px solid var(--border)',
+      }}
+    >
+      <div className="min-w-0">
+        <h1 className="page-title truncate">{title}</h1>
+        {subtitle ? <p className="page-subtitle truncate">{subtitle}</p> : null}
       </div>
 
-      <div className="flex items-center gap-4">
-        {seedStatus && (
-          <div className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 animate-fadeIn">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{seedStatus}</span>
-          </div>
-        )}
+      <div className="flex items-center gap-2 shrink-0">
+        {seedStatus ? (
+          <span className="hidden md:inline-flex items-center gap-1.5 pill pill-green">
+            <CheckCircle2 size={13} />
+            {seedStatus}
+          </span>
+        ) : null}
 
-        {/* Campana de Notificaciones */}
+        {/* Notificaciones */}
         <div className="relative">
           <button
-            onClick={() => setShowNotifMenu(!showNotifMenu)}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors relative cursor-pointer"
-            title="Centro de Alertas y Notificaciones"
+            onClick={() => setShowNotifMenu((v) => !v)}
+            className="w-10 h-10 rounded-[12px] flex items-center justify-center relative transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--green-soft)')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+            title="Notificaciones"
           >
-            <Bell className="w-5 h-5" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
-                {unreadCount > 9 ? '9+' : unreadCount}
+            <Bell size={18} />
+            {unread > 0 && (
+              <span
+                className="absolute top-1.5 right-1.5 min-w-[16px] h-[16px] px-1 rounded-full text-[10px] font-bold text-white flex items-center justify-center"
+                style={{ background: 'var(--primary)' }}
+              >
+                {unread > 9 ? '9+' : unread}
               </span>
             )}
           </button>
 
           {showNotifMenu && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 p-4 space-y-3 animate-fadeIn z-50">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                <div className="flex items-center gap-1.5">
-                  <Bell className="w-4 h-4 text-emerald-600" />
-                  <span className="font-bold text-xs text-slate-900">Notificaciones y Alertas</span>
-                  {unreadCount > 0 && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 bg-rose-100 text-rose-700 rounded-full">
-                      {unreadCount} nuevas
-                    </span>
-                  )}
-                </div>
-                {unreadCount > 0 && (
+            <div
+              className="absolute right-0 mt-2 w-[340px] card p-4 z-50"
+              style={{ boxShadow: '0 18px 40px rgba(24, 28, 26, 0.12)' }}
+            >
+              <div className="flex items-center justify-between pb-3">
+                <p className="text-[13px] font-bold" style={{ color: 'var(--text)' }}>
+                  Notificaciones
+                </p>
+                {unread > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1"
+                    className="text-[12px] font-semibold flex items-center gap-1"
+                    style={{ color: 'var(--primary)' }}
                   >
-                    <Check className="w-3 h-3" /> Marcar leídas
+                    <Check size={13} /> Marcar leídas
                   </button>
                 )}
               </div>
-
-              <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 space-y-1">
+              <div className="max-h-72 overflow-y-auto scroll-thin divide-y" style={{ borderColor: 'var(--border)' }}>
                 {notificaciones.length === 0 ? (
-                  <div className="py-6 text-center text-xs text-slate-400">
-                    No hay notificaciones recientes.
-                  </div>
+                  <p className="py-6 text-center muted">Sin notificaciones.</p>
                 ) : (
                   notificaciones.map((n) => (
-                    <div
-                      key={n.id}
-                      className={`py-2 px-1 text-xs space-y-1 ${!n.leida ? 'bg-emerald-50/40 rounded-lg p-2' : ''}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-900">{n.titulo}</span>
-                        <span className="text-[10px] text-slate-400">
-                          {n.fecha ? new Date(n.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                        </span>
+                    <div key={n.id} className="py-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-[12px] font-semibold" style={{ color: 'var(--text)' }}>
+                          {n.titulo}
+                        </p>
+                        {n.fecha ? (
+                          <span className="text-[11px]" style={{ color: 'var(--text-soft)' }}>
+                            {new Date(n.fecha).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        ) : null}
                       </div>
-                      <p className="text-[11px] text-slate-600 leading-snug">{n.mensaje}</p>
+                      <p className="text-[12px] leading-snug mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                        {n.mensaje}
+                      </p>
                     </div>
                   ))
                 )}
@@ -153,35 +176,39 @@ export default function Header({ title, subtitle }: { title: string; subtitle?: 
           )}
         </div>
 
-        <button
-          onClick={handleSeed}
-          disabled={seeding}
-          className="flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300/80 transition-all cursor-pointer shadow-xs active:scale-95 disabled:opacity-50"
-          title="Inicializar datos en Firebase Firestore"
-        >
-          <Database className={`w-3.5 h-3.5 text-emerald-600 ${seeding ? 'animate-spin' : ''}`} />
-          <span>{seeding ? 'Cargando Datos...' : 'Poblar Datos Demo'}</span>
-        </button>
-
-        <div className="h-6 w-px bg-slate-200" />
-
-        <div className="flex items-center gap-3 pl-2">
-          <div className="w-9 h-9 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold flex items-center justify-center text-xs shadow-xs">
-            {activeUser.nombre.substring(0, 2).toUpperCase()}
-          </div>
-          <div className="text-right">
-            <p className="text-xs font-semibold text-slate-800 leading-tight">{activeUser.nombre}</p>
-            <p className="text-[11px] text-slate-500 capitalize">{activeUser.rol}</p>
-          </div>
-          <button
-            onClick={() => {
-              if (confirm('¿Cerrar sesión?')) logout();
-            }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors ml-1 cursor-pointer"
-            title="Cerrar sesión"
-          >
-            <LogOut className="w-4 h-4" />
+        {/* Datos demo (solo staff) */}
+        {rolPortal && (
+          <button onClick={handleSeed} disabled={seeding} className="btn-secondary hidden md:inline-flex">
+            <Database size={15} />
+            {seeding ? 'Cargando…' : 'Datos demo'}
           </button>
+        )}
+
+        <div className="hidden sm:flex items-center gap-2.5 pl-2">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold"
+            style={{ background: 'var(--green-soft-strong)', color: 'var(--primary-dark)' }}
+          >
+            {(activeUser.nombre || 'PL').substring(0, 2).toUpperCase()}
+          </div>
+          <div className="hidden lg:block leading-tight">
+            <p className="text-[12px] font-semibold" style={{ color: 'var(--text)' }}>
+              {activeUser.nombre}
+            </p>
+            <p className="text-[11px] capitalize" style={{ color: 'var(--text-soft)' }}>
+              {activeUser.rol}
+            </p>
+          </div>
+          {currentUser && (
+            <button
+              onClick={() => logout()}
+              className="w-9 h-9 rounded-[10px] flex items-center justify-center"
+              style={{ color: 'var(--text-soft)' }}
+              title="Cerrar sesión"
+            >
+              <LogOut size={16} />
+            </button>
+          )}
         </div>
       </div>
     </header>

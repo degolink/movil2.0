@@ -311,23 +311,23 @@ export default function PrestamosPage() {
         {/* Banner de Feedback */}
         {feedback && (
           <div
-            className={`p-4 rounded-xl flex items-center justify-between text-sm font-medium ${
+            className={`p-4 rounded-[14px] flex items-center justify-between text-sm font-medium ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                : 'bg-rose-50 text-rose-800 border border-rose-200'
+                ? 'bg-[var(--green-soft)] text-[var(--primary-dark)] border border-[var(--border)]'
+                : 'bg-[var(--error-bg)] text-[var(--error)] border border-rose-200'
             }`}
           >
             <div className="flex items-center gap-2">
               {feedback.type === 'success' ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                <CheckCircle2 className="w-5 h-5 text-[var(--primary)]" />
               ) : (
-                <AlertCircle className="w-5 h-5 text-rose-600" />
+                <AlertCircle className="w-5 h-5 text-[var(--error)]" />
               )}
               <span>{feedback.message}</span>
             </div>
             <button
               onClick={() => setFeedback(null)}
-              className="text-xs underline hover:opacity-75"
+              className="text-[13px] underline hover:opacity-75"
             >
               Cerrar
             </button>
@@ -335,17 +335,17 @@ export default function PrestamosPage() {
         )}
 
         {/* Toolbar de Filtros y Búsqueda */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-white p-5 rounded-[18px] border border-[var(--border)]  flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {/* Buscador */}
             <div className="relative min-w-[240px]">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[var(--text-soft)] absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Buscar por usuario, sala, recurso..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full pl-9 pr-3 py-2 text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--green-soft-strong)]"
               />
             </div>
 
@@ -353,7 +353,7 @@ export default function PrestamosPage() {
             <select
               value={filterEstado}
               onChange={(e) => setFilterEstado(e.target.value)}
-              className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--green-soft-strong)]"
             >
               <option value="todos">Todos los Estados</option>
               <option value="pendiente">Pendientes de Aprobación</option>
@@ -366,7 +366,7 @@ export default function PrestamosPage() {
             <select
               value={filterSala}
               onChange={(e) => setFilterSala(e.target.value)}
-              className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--green-soft-strong)]"
             >
               <option value="todas">Todas las Salas</option>
               {salas.map((sala) => (
@@ -390,7 +390,7 @@ export default function PrestamosPage() {
                 });
                 setModalType('nueva');
               }}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white  transition-colors"
             >
               <Plus className="w-4 h-4" /> Nueva Solicitud
             </button>
@@ -398,34 +398,34 @@ export default function PrestamosPage() {
         </div>
 
         {/* Tabla de Préstamos y Solicitudes */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+        <div className="bg-white rounded-[18px] border border-[var(--border)]  overflow-hidden">
+          <div className="p-5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--background)]/60">
             <div>
-              <h3 className="font-bold text-slate-900 text-base">
+              <h3 className="font-bold text-[var(--text)] text-base">
                 Registro de Solicitudes y Préstamos
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-[13px] text-[var(--text-soft)]">
                 Mostrando {filteredSolicitudes.length} registros según tus permisos de rol
               </p>
             </div>
             {activeUser.rol === 'gestor' && (
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
+              <span className="text-[13px] font-semibold px-2.5 py-1 rounded-lg bg-[var(--warning-bg)] text-[var(--warning-text)] border border-[var(--warning-border)]">
                 Vista de Gestor: Solo tus salas asignadas
               </span>
             )}
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-sm text-slate-500">Cargando registros...</div>
+            <div className="p-12 text-center text-sm text-[var(--text-soft)]">Cargando registros...</div>
           ) : filteredSolicitudes.length === 0 ? (
-            <div className="p-12 text-center text-slate-500 text-sm">
+            <div className="p-12 text-center text-[var(--text-soft)] text-sm">
               No se encontraron préstamos que coincidan con los filtros seleccionados.
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+              <table className="w-full text-left border-collapse text-[13px]">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/90 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                  <tr className="border-b border-[var(--border)] bg-[var(--background)]/90 text-[var(--text-muted)] font-bold uppercase tracking-wider text-[10px]">
                     <th className="p-4">Solicitante</th>
                     <th className="p-4">Recurso / Equipo</th>
                     <th className="p-4">Sala Asignada</th>
@@ -434,34 +434,34 @@ export default function PrestamosPage() {
                     <th className="p-4 text-right">Acciones del Gestor</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+                <tbody className="divide-y divide-[var(--border)] text-[var(--text-muted)] font-medium">
                   {filteredSolicitudes.map((sol) => (
-                    <tr key={sol.id} className="hover:bg-slate-50/60 transition-colors">
+                    <tr key={sol.id} className="hover:bg-[var(--background)]/60 transition-colors">
                       {/* Solicitante */}
                       <td className="p-4">
-                        <div className="font-bold text-slate-900">{sol.userNombre}</div>
-                        <div className="text-[11px] text-slate-400">{sol.userEmail}</div>
-                        <span className="inline-block mt-1 text-[10px] uppercase font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                        <div className="font-bold text-[var(--text)]">{sol.userNombre}</div>
+                        <div className="text-[11px] text-[var(--text-soft)]">{sol.userEmail}</div>
+                        <span className="inline-block mt-1 text-[10px] uppercase font-semibold px-1.5 py-0.2 rounded bg-[var(--green-soft)] text-[var(--text-muted)] border border-[var(--border)]">
                           {sol.userRol}
                         </span>
                       </td>
 
                       {/* Recurso */}
                       <td className="p-4">
-                        <div className="font-semibold text-slate-800">
+                        <div className="font-semibold text-[var(--text)]">
                           {sol.articuloNombre || 'Reserva de Espacio'}
                         </div>
-                        <div className="text-[11px] text-slate-500">
+                        <div className="text-[11px] text-[var(--text-soft)]">
                           Cantidad: {sol.cantidad} ud • Tipo: {sol.tipoRecurso}
                         </div>
-                        <div className="text-[11px] text-slate-400 italic line-clamp-1 max-w-xs mt-0.5">
+                        <div className="text-[11px] text-[var(--text-soft)] italic line-clamp-1 max-w-xs mt-0.5">
                           "{sol.motivo}"
                         </div>
                       </td>
 
                       {/* Sala */}
                       <td className="p-4">
-                        <div className="font-bold text-emerald-900 bg-emerald-50/80 px-2.5 py-1 rounded-lg border border-emerald-200/80 inline-block">
+                        <div className="font-bold text-[var(--primary-dark)] bg-[var(--green-soft)] px-2.5 py-1 rounded-lg border border-[var(--border)]/80 inline-block">
                           {sol.salaNombre}
                         </div>
 
@@ -482,8 +482,8 @@ export default function PrestamosPage() {
 
                       {/* Fechas */}
                       <td className="p-4 whitespace-nowrap">
-                        <div className="text-slate-800 font-semibold">{sol.fechaInicio}</div>
-                        <div className="text-slate-500 text-[11px]">hasta {sol.fechaFin}</div>
+                        <div className="text-[var(--text)] font-semibold">{sol.fechaInicio}</div>
+                        <div className="text-[var(--text-soft)] text-[11px]">hasta {sol.fechaFin}</div>
                       </td>
 
                       {/* Estado */}
@@ -491,12 +491,12 @@ export default function PrestamosPage() {
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border ${
                             sol.estado === 'pendiente'
-                              ? 'bg-amber-50 text-amber-800 border-amber-300'
+                              ? 'bg-[var(--warning-bg)] text-[var(--warning-text)] border-[var(--warning-border)]'
                               : sol.estado === 'activo'
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                              ? 'bg-[var(--green-soft)] text-[var(--primary-dark)] border-[var(--border)]'
                               : sol.estado === 'devuelto'
                               ? 'bg-blue-50 text-blue-800 border-blue-300'
-                              : 'bg-rose-50 text-rose-800 border-rose-300'
+                              : 'bg-[var(--error-bg)] text-[var(--error)] border-[var(--error-bg)]'
                           }`}
                         >
                           {sol.estado === 'pendiente' && <Clock className="w-3 h-3" />}
@@ -508,7 +508,7 @@ export default function PrestamosPage() {
 
                         {sol.estado === 'rechazado' && sol.motivoRechazo && (
                           <p
-                            className="text-[10px] text-rose-700 mt-1 italic max-w-xs line-clamp-2"
+                            className="text-[10px] text-[var(--error)] mt-1 italic max-w-xs line-clamp-2"
                             title={sol.motivoRechazo}
                           >
                             Motivo: {sol.motivoRechazo}
@@ -541,7 +541,7 @@ export default function PrestamosPage() {
                                 setMotivoRechazo('');
                                 setModalType('rechazar');
                               }}
-                              className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg bg-[var(--error-bg)] hover:bg-[var(--error-bg)] text-[var(--error)] border border-rose-200 transition-colors cursor-pointer"
                               title="Rechazar solicitud con motivo justificativo"
                             >
                               <X className="w-4 h-4" />
@@ -553,7 +553,7 @@ export default function PrestamosPage() {
                                 setSelectedSol(sol);
                                 setModalType('aprobar');
                               }}
-                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
+                              className="px-3 py-1.5 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-semibold text-[13px] transition-colors flex items-center gap-1  cursor-pointer"
                               title="Aprobar préstamo"
                             >
                               <Check className="w-3.5 h-3.5" /> Aprobar
@@ -562,12 +562,12 @@ export default function PrestamosPage() {
                         ) : sol.estado === 'activo' ? (
                           <button
                             onClick={() => handleDevolver(sol.id)}
-                            className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-300 transition-colors"
+                            className="px-3 py-1.5 rounded-lg bg-[var(--green-soft)] hover:bg-[var(--border)] text-[var(--text-muted)] font-semibold text-[13px] border border-[var(--border)] transition-colors"
                           >
                             Registrar Devolución
                           </button>
                         ) : (
-                          <span className="text-[11px] text-slate-400 italic">Completado</span>
+                          <span className="text-[11px] text-[var(--text-soft)] italic">Completado</span>
                         )}
                       </td>
                     </tr>
@@ -580,22 +580,22 @@ export default function PrestamosPage() {
 
         {/* MODAL: APROBAR SOLICITUD */}
         {modalType === 'aprobar' && selectedSol && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+          <div className="fixed inset-0 bg-[rgba(24,28,26,0.45)]  flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white rounded-[18px] max-w-md w-full p-6  border border-[var(--border)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <h3 className="font-bold text-[var(--text)] text-base flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-[var(--primary)]" />
                   Aprobar Solicitud de Préstamo
                 </h3>
                 <button
                   onClick={() => setModalType(null)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-[var(--text-soft)] hover:text-[var(--text-muted)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1.5">
+              <div className="bg-[var(--background)] p-3 rounded-[14px] border border-[var(--border)] text-[13px] space-y-1.5">
                 <p>
                   <strong>Solicitante:</strong> {selectedSol.userNombre} ({selectedSol.userRol})
                 </p>
@@ -611,7 +611,7 @@ export default function PrestamosPage() {
                 </p>
               </div>
 
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl text-xs border border-emerald-200">
+              <div className="p-3 bg-[var(--green-soft)] text-[var(--primary-dark)] rounded-[14px] text-[13px] border border-[var(--border)]">
                 Al aprobar, el recurso quedará formalmente en estado <strong>activo</strong> y se
                 descontará el stock físico del inventario del laboratorio.
               </div>
@@ -620,7 +620,7 @@ export default function PrestamosPage() {
                 <button
                   type="button"
                   onClick={() => setModalType(null)}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 text-[13px] font-semibold rounded-[14px] text-[var(--text-muted)] hover:bg-[var(--green-soft)]"
                 >
                   Cancelar
                 </button>
@@ -628,7 +628,7 @@ export default function PrestamosPage() {
                   type="button"
                   onClick={() => handleAprobar(false)}
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                  className="px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white "
                 >
                   {actionLoading ? 'Procesando...' : 'Confirmar Aprobación'}
                 </button>
@@ -639,28 +639,28 @@ export default function PrestamosPage() {
 
         {/* MODAL: RECHAZAR SOLICITUD (CON MOTIVO JUSTIFICATIVO OBLIGATORIO) */}
         {modalType === 'rechazar' && selectedSol && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="font-bold text-slate-900 text-base flex items-center gap-2 text-rose-700">
-                  <AlertCircle className="w-5 h-5 text-rose-600" />
+          <div className="fixed inset-0 bg-[rgba(24,28,26,0.45)]  flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white rounded-[18px] max-w-md w-full p-6  border border-[var(--border)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <h3 className="font-bold text-[var(--text)] text-base flex items-center gap-2 text-[var(--error)]">
+                  <AlertCircle className="w-5 h-5 text-[var(--error)]" />
                   Rechazar Solicitud de Reserva
                 </h3>
                 <button
                   onClick={() => setModalType(null)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-[var(--text-soft)] hover:text-[var(--text-muted)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <p className="text-xs text-slate-600">
+              <p className="text-[13px] text-[var(--text-muted)]">
                 De acuerdo a la política institucional, debes añadir un{' '}
                 <strong>motivo justificativo formal</strong> que será notificado al estudiante o docente:
               </p>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-[13px] font-bold text-[var(--text-muted)] mb-1">
                   Motivo Justificativo del Rechazo *
                 </label>
                 <textarea
@@ -668,7 +668,7 @@ export default function PrestamosPage() {
                   value={motivoRechazo}
                   onChange={(e) => setMotivoRechazo(e.target.value)}
                   placeholder="Ej: La sala se encuentra bajo mantenimiento correctivo de redes eléctricas durante las fechas solicitadas."
-                  className="w-full text-xs p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-rose-500 focus:outline-none"
+                  className="w-full text-[13px] p-3 border border-[var(--border)] rounded-[14px] focus:ring-2 focus:ring-rose-500 focus:outline-none"
                   required
                 />
               </div>
@@ -677,7 +677,7 @@ export default function PrestamosPage() {
                 <button
                   type="button"
                   onClick={() => setModalType(null)}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 text-[13px] font-semibold rounded-[14px] text-[var(--text-muted)] hover:bg-[var(--green-soft)]"
                 >
                   Cancelar
                 </button>
@@ -685,7 +685,7 @@ export default function PrestamosPage() {
                   type="button"
                   onClick={handleRechazar}
                   disabled={actionLoading || !motivoRechazo.trim()}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-xs disabled:opacity-50"
+                  className="px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--error)] hover:bg-[#8f1d17] text-white  disabled:opacity-50"
                 >
                   {actionLoading ? 'Guardando...' : 'Rechazar con Justificación'}
                 </button>
@@ -696,22 +696,22 @@ export default function PrestamosPage() {
 
         {/* MODAL: REASIGNACIÓN DE SALA (CAMBIO DE SALA EQUIVALENTE) */}
         {modalType === 'reasignar' && selectedSol && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-            <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="font-bold text-slate-900 text-base flex items-center gap-2 text-indigo-800">
+          <div className="fixed inset-0 bg-[rgba(24,28,26,0.45)]  flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white rounded-[18px] max-w-lg w-full p-6  border border-[var(--border)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <h3 className="font-bold text-[var(--text)] text-base flex items-center gap-2 text-indigo-800">
                   <Shuffle className="w-5 h-5 text-indigo-600" />
                   Reasignación de Espacios (Cambio de Sala)
                 </h3>
                 <button
                   onClick={() => setModalType(null)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-[var(--text-soft)] hover:text-[var(--text-muted)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="bg-indigo-50/70 p-3 rounded-xl border border-indigo-200 text-xs text-indigo-900">
+              <div className="bg-indigo-50/70 p-3 rounded-[14px] border border-indigo-200 text-[13px] text-indigo-900">
                 <p>
                   <strong>Facultad del Gestor:</strong> En caso de conflicto de horarios o mantenimiento,
                   puedes reasignar una sala alternativa equivalente antes de la aprobación.
@@ -723,13 +723,13 @@ export default function PrestamosPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-[13px] font-bold text-[var(--text-muted)] mb-1">
                   Nueva Sala Equivalente de Destino *
                 </label>
                 <select
                   value={nuevaSalaId}
                   onChange={(e) => setNuevaSalaId(e.target.value)}
-                  className="w-full text-xs p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-medium bg-white"
+                  className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] focus:ring-2 focus:ring-indigo-500 font-medium bg-white"
                 >
                   {salas.map((sala) => (
                     <option key={sala.id} value={sala.id}>
@@ -740,7 +740,7 @@ export default function PrestamosPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-[13px] font-bold text-[var(--text-muted)] mb-1">
                   Motivo de la Reasignación *
                 </label>
                 <textarea
@@ -748,7 +748,7 @@ export default function PrestamosPage() {
                   value={motivoReasignacion}
                   onChange={(e) => setMotivoReasignacion(e.target.value)}
                   placeholder="Ej: Se asigna la Sala 105 por mantenimiento eléctrico preventivo en la Sala 104."
-                  className="w-full text-xs p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  className="w-full text-[13px] p-3 border border-[var(--border)] rounded-[14px] focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                   required
                 />
               </div>
@@ -757,7 +757,7 @@ export default function PrestamosPage() {
                 <button
                   type="button"
                   onClick={() => setModalType(null)}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 text-[13px] font-semibold rounded-[14px] text-[var(--text-muted)] hover:bg-[var(--green-soft)]"
                 >
                   Cancelar
                 </button>
@@ -765,7 +765,7 @@ export default function PrestamosPage() {
                   type="button"
                   onClick={handleReasignar}
                   disabled={actionLoading || !nuevaSalaId || !motivoReasignacion.trim()}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs disabled:opacity-50"
+                  className="px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary-dark)] hover:bg-[#184a2f] text-white  disabled:opacity-50"
                 >
                   {actionLoading ? 'Reasignando...' : 'Guardar y Notificar Cambio'}
                 </button>
@@ -776,16 +776,16 @@ export default function PrestamosPage() {
 
         {/* MODAL: NUEVA SOLICITUD */}
         {modalType === 'nueva' && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-            <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-                  <Plus className="w-5 h-5 text-emerald-600" />
+          <div className="fixed inset-0 bg-[rgba(24,28,26,0.45)]  flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white rounded-[18px] max-w-lg w-full p-6  border border-[var(--border)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <h3 className="font-bold text-[var(--text)] text-base flex items-center gap-2">
+                  <Plus className="w-5 h-5 text-[var(--primary)]" />
                   Tramitar Solicitud de Préstamo
                 </h3>
                 <button
                   onClick={() => setModalType(null)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-[var(--text-soft)] hover:text-[var(--text-muted)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -794,13 +794,13 @@ export default function PrestamosPage() {
               <form onSubmit={handleCrearSolicitud} className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Sala o Laboratorio *
                     </label>
                     <select
                       value={newSolData.salaId}
                       onChange={(e) => setNewSolData({ ...newSolData, salaId: e.target.value })}
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl bg-white"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] bg-white"
                       required
                     >
                       {salas.map((sala) => (
@@ -812,7 +812,7 @@ export default function PrestamosPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Artículo o Equipo Específico
                     </label>
                     <select
@@ -820,7 +820,7 @@ export default function PrestamosPage() {
                       onChange={(e) =>
                         setNewSolData({ ...newSolData, articuloId: e.target.value })
                       }
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl bg-white"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] bg-white"
                     >
                       <option value="">Solo Reserva de Sala (Sin artículo)</option>
                       {articulos.map((art) => (
@@ -834,7 +834,7 @@ export default function PrestamosPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Fecha Inicio *
                     </label>
                     <input
@@ -843,13 +843,13 @@ export default function PrestamosPage() {
                       onChange={(e) =>
                         setNewSolData({ ...newSolData, fechaInicio: e.target.value })
                       }
-                      className="w-full text-xs p-2 border border-slate-300 rounded-xl"
+                      className="w-full text-[13px] p-2 border border-[var(--border)] rounded-[14px]"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Fecha Fin *
                     </label>
                     <input
@@ -858,14 +858,14 @@ export default function PrestamosPage() {
                       onChange={(e) =>
                         setNewSolData({ ...newSolData, fechaFin: e.target.value })
                       }
-                      className="w-full text-xs p-2 border border-slate-300 rounded-xl"
+                      className="w-full text-[13px] p-2 border border-[var(--border)] rounded-[14px]"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                     Motivo Académico / Práctica *
                   </label>
                   <textarea
@@ -873,23 +873,23 @@ export default function PrestamosPage() {
                     value={newSolData.motivo}
                     onChange={(e) => setNewSolData({ ...newSolData, motivo: e.target.value })}
                     placeholder="Describe el propósito del préstamo o práctica"
-                    className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                    className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                     required
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border)]">
                   <button
                     type="button"
                     onClick={() => setModalType(null)}
-                    className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100"
+                    className="px-4 py-2 text-[13px] font-semibold rounded-[14px] text-[var(--text-muted)] hover:bg-[var(--green-soft)]"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={actionLoading}
-                    className="px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                    className="px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white "
                   >
                     {actionLoading ? 'Registrando...' : 'Enviar Solicitud'}
                   </button>

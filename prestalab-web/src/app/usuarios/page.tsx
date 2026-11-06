@@ -152,23 +152,23 @@ export default function UsuariosPage() {
 
       <main className="p-8 space-y-6 max-w-7xl mx-auto w-full">
         {/* Toolbar */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-white p-5 rounded-[18px] border border-[var(--border)]  flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <div className="relative min-w-[260px]">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[var(--text-soft)] absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Buscar por nombre, código o correo institucional..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full pl-9 pr-3 py-2 text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--green-soft-strong)]"
               />
             </div>
 
             <select
               value={filterRol}
               onChange={(e) => setFilterRol(e.target.value)}
-              className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--green-soft-strong)]"
             >
               <option value="todos">Todos los Roles</option>
               <option value="estudiante">Estudiantes</option>
@@ -180,7 +180,7 @@ export default function UsuariosPage() {
             <select
               value={filterGenero}
               onChange={(e) => setFilterGenero(e.target.value)}
-              className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="text-[13px] bg-[var(--background)] border border-[var(--border)] rounded-[14px] px-3 py-2 text-[var(--text-muted)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--green-soft-strong)]"
             >
               <option value="todos">Todos los Géneros</option>
               <option value="Masculino">Masculino</option>
@@ -191,36 +191,36 @@ export default function UsuariosPage() {
 
           <button
             onClick={() => openModal()}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors shrink-0"
+            className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white  transition-colors shrink-0"
           >
             <Plus className="w-4 h-4" /> Registrar Usuario
           </button>
         </div>
 
         {/* Tabla de Usuarios */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+        <div className="bg-white rounded-[18px] border border-[var(--border)]  overflow-hidden">
+          <div className="p-5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--background)]/60">
             <div>
-              <h3 className="font-bold text-slate-900 text-base">
+              <h3 className="font-bold text-[var(--text)] text-base">
                 Directorio Institucional de Usuarios ({filteredUsuarios.length})
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-[13px] text-[var(--text-soft)]">
                 Control RBAC con auditoría de género y asignación de facultades
               </p>
             </div>
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-sm text-slate-500">Cargando directorio de usuarios...</div>
+            <div className="p-12 text-center text-sm text-[var(--text-soft)]">Cargando directorio de usuarios...</div>
           ) : filteredUsuarios.length === 0 ? (
-            <div className="p-12 text-center text-slate-500 text-sm">
+            <div className="p-12 text-center text-[var(--text-soft)] text-sm">
               No se encontraron usuarios con los criterios de búsqueda.
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+              <table className="w-full text-left border-collapse text-[13px]">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/90 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                  <tr className="border-b border-[var(--border)] bg-[var(--background)]/90 text-[var(--text-muted)] font-bold uppercase tracking-wider text-[10px]">
                     <th className="p-4">Usuario</th>
                     <th className="p-4">Sexo / Género</th>
                     <th className="p-4">Rol Asignado</th>
@@ -229,24 +229,24 @@ export default function UsuariosPage() {
                     <th className="p-4 text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+                <tbody className="divide-y divide-[var(--border)] text-[var(--text-muted)] font-medium">
                   {filteredUsuarios.map((u) => {
                     const labsSupervisados = (u.laboratoriosAsignados || [])
                       .map((id) => salas.find((s) => s.id === id)?.codigo)
                       .filter(Boolean);
 
                     return (
-                      <tr key={u.id} className="hover:bg-slate-50/60 transition-colors">
+                      <tr key={u.id} className="hover:bg-[var(--background)]/60 transition-colors">
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs">
+                            <div className="w-8 h-8 rounded-full bg-[var(--green-soft)] text-[var(--text-muted)] font-bold flex items-center justify-center text-[13px]">
                               {u.nombre.substring(0, 2).toUpperCase()}
                             </div>
                             <div>
-                              <div className="font-bold text-slate-900">{u.nombre}</div>
-                              <div className="text-[11px] text-slate-400">{u.email}</div>
+                              <div className="font-bold text-[var(--text)]">{u.nombre}</div>
+                              <div className="text-[11px] text-[var(--text-soft)]">{u.email}</div>
                               {u.matriculaOCodigo && (
-                                <span className="text-[10px] text-slate-500 font-mono">
+                                <span className="text-[10px] text-[var(--text-soft)] font-mono">
                                   {u.matriculaOCodigo}
                                 </span>
                               )}
@@ -261,7 +261,7 @@ export default function UsuariosPage() {
                                 ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200'
                                 : u.genero === 'Masculino'
                                 ? 'bg-sky-50 text-sky-700 border-sky-200'
-                                : 'bg-slate-100 text-slate-700 border-slate-200'
+                                : 'bg-[var(--green-soft)] text-[var(--text-muted)] border-[var(--border)]'
                             }`}
                           >
                             {u.genero || 'Masculino'}
@@ -272,9 +272,9 @@ export default function UsuariosPage() {
                           <span
                             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border ${
                               u.rol === 'admin'
-                                ? 'bg-rose-50 text-rose-800 border-rose-300'
+                                ? 'bg-[var(--error-bg)] text-[var(--error)] border-[var(--error-bg)]'
                                 : u.rol === 'gestor'
-                                ? 'bg-amber-50 text-amber-800 border-amber-300'
+                                ? 'bg-[var(--warning-bg)] text-[var(--warning-text)] border-[var(--warning-border)]'
                                 : u.rol === 'docente'
                                 ? 'bg-indigo-50 text-indigo-800 border-indigo-300'
                                 : 'bg-blue-50 text-blue-800 border-blue-300'
@@ -288,14 +288,14 @@ export default function UsuariosPage() {
                         </td>
 
                         <td className="p-4">
-                          <span className="text-slate-800 font-medium">
+                          <span className="text-[var(--text)] font-medium">
                             {u.departamento || 'Sin especificar'}
                           </span>
                         </td>
 
                         <td className="p-4">
                           {u.rol === 'admin' ? (
-                            <span className="text-xs text-rose-800 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                            <span className="text-[13px] text-[var(--error)] font-bold bg-[var(--error-bg)] px-2 py-0.5 rounded border border-rose-200">
                               Acceso Total Global (Todas las Salas)
                             </span>
                           ) : u.rol === 'gestor' ? (
@@ -304,24 +304,24 @@ export default function UsuariosPage() {
                                 {labsSupervisados.map((code) => (
                                   <span
                                     key={code}
-                                    className="text-[10px] font-bold bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200"
+                                    className="text-[10px] font-bold bg-[var(--green-soft)] text-[var(--primary-dark)] px-2 py-0.5 rounded border border-[var(--border)]"
                                   >
                                     {code}
                                   </span>
                                 ))}
                               </div>
                             ) : (
-                              <span className="text-slate-400 italic text-xs">Sin laboratorios asignados</span>
+                              <span className="text-[var(--text-soft)] italic text-[13px]">Sin laboratorios asignados</span>
                             )
                           ) : (
-                            <span className="text-slate-400 text-xs">N/A (Consumidor)</span>
+                            <span className="text-[var(--text-soft)] text-[13px]">N/A (Consumidor)</span>
                           )}
                         </td>
 
                         <td className="p-4 text-right">
                           <button
                             onClick={() => openModal(u)}
-                            className="p-1.5 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                            className="p-1.5 text-[var(--text-soft)] hover:text-[var(--primary)] hover:bg-[var(--green-soft)] rounded-lg transition-colors"
                             title="Modificar rol o asignación"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -338,15 +338,15 @@ export default function UsuariosPage() {
 
         {/* MODAL CREAR / EDITAR USUARIO */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-            <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 className="font-bold text-slate-900 text-base">
+          <div className="fixed inset-0 bg-[rgba(24,28,26,0.45)]  flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white rounded-[18px] max-w-lg w-full p-6  border border-[var(--border)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <h3 className="font-bold text-[var(--text)] text-base">
                   {editingUser ? 'Modificar Privilegios y Rol' : 'Registrar Nuevo Usuario'}
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-[var(--text-soft)] hover:text-[var(--text-muted)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -355,7 +355,7 @@ export default function UsuariosPage() {
               <form onSubmit={handleSave} className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Nombre Completo *
                     </label>
                     <input
@@ -363,12 +363,12 @@ export default function UsuariosPage() {
                       value={formData.nombre}
                       onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                       placeholder="Ej: Ing. Carlos Mendoza"
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Correo Institucional *
                     </label>
                     <input
@@ -376,7 +376,7 @@ export default function UsuariosPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="usuario@universidad.edu.co"
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                       required
                     />
                   </div>
@@ -384,7 +384,7 @@ export default function UsuariosPage() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Sexo / Género *
                     </label>
                     <select
@@ -392,7 +392,7 @@ export default function UsuariosPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, genero: e.target.value as UserGender })
                       }
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl bg-white font-semibold"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] bg-white font-semibold"
                     >
                       <option value="Masculino">Masculino</option>
                       <option value="Femenino">Femenino</option>
@@ -401,7 +401,7 @@ export default function UsuariosPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Rol en la Matriz *
                     </label>
                     <select
@@ -409,7 +409,7 @@ export default function UsuariosPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, rol: e.target.value as UserRole })
                       }
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl bg-white font-semibold"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] bg-white font-semibold"
                     >
                       <option value="estudiante">Estudiante</option>
                       <option value="docente">Docente</option>
@@ -419,7 +419,7 @@ export default function UsuariosPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                       Matrícula o Código
                     </label>
                     <input
@@ -429,13 +429,13 @@ export default function UsuariosPage() {
                         setFormData({ ...formData, matriculaOCodigo: e.target.value })
                       }
                       placeholder="EST-2024-001"
-                      className="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono uppercase"
+                      className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px] font-mono uppercase"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-[13px] font-semibold text-[var(--text-muted)] mb-1">
                     Departamento o Facultad
                   </label>
                   <input
@@ -443,17 +443,17 @@ export default function UsuariosPage() {
                     value={formData.departamento}
                     onChange={(e) => setFormData({ ...formData, departamento: e.target.value })}
                     placeholder="Facultad de Ingeniería Electrónica y Telecomunicaciones"
-                    className="w-full text-xs p-2.5 border border-slate-300 rounded-xl"
+                    className="w-full text-[13px] p-2.5 border border-[var(--border)] rounded-[14px]"
                   />
                 </div>
 
                 {/* Si es GESTOR, seleccionar qué laboratorios supervisa */}
                 {formData.rol === 'gestor' && (
-                  <div className="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200/80 space-y-2">
-                    <label className="block text-xs font-bold text-amber-900">
+                  <div className="bg-[var(--warning-bg)]/60 p-3.5 rounded-[14px] border border-[var(--warning-border)]/80 space-y-2">
+                    <label className="block text-[13px] font-bold text-[var(--warning-text)]">
                       Laboratorios Asignados para Supervisión Operativa:
                     </label>
-                    <p className="text-[11px] text-amber-800/80">
+                    <p className="text-[11px] text-[var(--warning-text)]/80">
                       El gestor solo podrá aprobar, rechazar y reasignar solicitudes dirigidas a estas salas:
                     </p>
                     <div className="space-y-1.5 max-h-36 overflow-y-auto pt-1">
@@ -462,13 +462,13 @@ export default function UsuariosPage() {
                         return (
                           <label
                             key={sala.id}
-                            className="flex items-center gap-2 text-xs text-slate-700 hover:bg-white/80 p-1 rounded cursor-pointer"
+                            className="flex items-center gap-2 text-[13px] text-[var(--text-muted)] hover:bg-white p-1 rounded cursor-pointer"
                           >
                             <input
                               type="checkbox"
                               checked={isChecked}
                               onChange={() => handleToggleLab(sala.id)}
-                              className="rounded text-emerald-600 focus:ring-emerald-500"
+                              className="rounded text-[var(--primary)] focus:ring-[var(--green-soft-strong)]"
                             />
                             <span>
                               <strong>{sala.codigo}</strong> - {sala.nombre}
@@ -480,17 +480,17 @@ export default function UsuariosPage() {
                   </div>
                 )}
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border)]">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100"
+                    className="px-4 py-2 text-[13px] font-semibold rounded-[14px] text-[var(--text-muted)] hover:bg-[var(--green-soft)]"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                    className="px-4 py-2 text-[13px] font-semibold rounded-[14px] bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white "
                   >
                     Guardar Cambios
                   </button>

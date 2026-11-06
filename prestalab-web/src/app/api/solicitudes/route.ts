@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { SolicitudPrestamo } from '@/types';
+import { requireStaff } from '@/lib/guards';
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
     const gestorId = searchParams.get('gestorId');
     const userId = searchParams.get('userId');
 
-    let query: FirebaseFirestore.Query = adminDb.collection('solicitudes');
+    let query: FirebaseFirestore.Query = adminDb.collection('prestamos');
 
     if (estado && estado !== 'todos') {
       query = query.where('estado', '==', estado);
@@ -51,6 +52,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const guard = await requireStaff(request);
+  if ('response' in guard) return guard.response;
+
   try {
     const body = await request.json();
     const {
@@ -77,7 +81,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newDocRef = adminDb.collection('solicitudes').doc();
+    const newDocRef = adminDb.collection('prestamos').doc();
     const nuevaSolicitud: SolicitudPrestamo = {
       id: newDocRef.id,
       userId,
@@ -100,13 +104,6 @@ export async function POST(request: NextRequest) {
     };
 
     await newDocRef.set(nuevaSolicitud);
-
-    // Registro espejo en 'prestamos'
-    await adminDb.collection('prestamos').doc(newDocRef.id).set({
-      ...nuevaSolicitud,
-      createdAt: nuevaSolicitud.fechaSolicitud,
-      updatedAt: new Date().toISOString(),
-    });
 
     return NextResponse.json({ success: true, data: nuevaSolicitud }, { status: 201 });
   } catch (error: any) {

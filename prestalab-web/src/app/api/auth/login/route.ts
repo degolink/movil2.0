@@ -1,86 +1,104 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebase-admin';
-import { cookies } from 'next/headers';
+import { adminAuth, adminDb } from '@/lib/firebase-admin';
+import { clearSessionCookie, setSessionCookie } from '@/lib/session';
+
+const IDENTITY_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email, password } = body;
+    const body = await request.json().catch(() => ({}));
+    const email = String(body.email || '').trim().toLowerCase();
+    const password = String(body.password || '');
 
     if (!email || !password) {
       return NextResponse.json(
-        { success: false, error: 'Por favor ingresa tu correo institucional y contraseña.' },
-        { status: 400 }
+        { success: false, error: 'Ingresa tu correo institucional y contraseña.' },
+        { status: 400 },
       );
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    const apiKey =
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY;
 
-    // 1. Buscar en la colección de Firestore 'usuarios'
-    const snapshot = await adminDb
-      .collection('usuarios')
-      .where('email', '==', cleanEmail)
-      .limit(1)
-      .get();
-
-    let userData: any = null;
-
-    if (!snapshot.empty) {
-      const doc = snapshot.docs[0];
-      userData = { id: doc.id, ...doc.data() };
-    } else {
-      // Si no existe pero es el email admin por defecto, crear sesión de respaldo
-      if (cleanEmail === 'admin.prestalab@universidad.edu.co') {
-        userData = {
-          id: 'user-admin-1',
-          nombre: 'Ing. Mateo Gómez (Admin)',
-          email: cleanEmail,
-          rol: 'admin',
-          laboratoriosAsignados: ['sala-redes-201', 'sala-robotica-104', 'sala-computo-302', 'sala-multiuso-105', 'sala-quimica-205'],
-          departamento: 'Dirección de Tecnologías de la Información',
-        };
-      } else {
-        return NextResponse.json(
-          { success: false, error: 'No se encontró ninguna cuenta asociada a este correo institucional.' },
-          { status: 401 }
-        );
-      }
-    }
-
-    // Validación de contraseña mínima
-    if (password.length < 4) {
+    if (!apiKey) {
       return NextResponse.json(
-        { success: false, error: 'La contraseña debe tener al menos 4 caracteres.' },
-        { status: 400 }
+        {
+          success: false,
+          error:
+            'Falta NEXT_PUBLIC_FIREBASE_API_KEY en .env.local para autenticar con Firebase.',
+        },
+        { status: 503 },
       );
     }
 
-    // Configurar cookie de sesión HTTP
-    const sessionPayload = {
-      id: userData.id,
-      nombre: userData.nombre,
-      email: userData.email,
-      rol: userData.rol,
-      laboratoriosAsignados: userData.laboratoriosAsignados || [],
-      departamento: userData.departamento || '',
-    };
-
-    const cookieStore = await cookies();
-    cookieStore.set('prestalab_session', JSON.stringify(sessionPayload), {
-      httpOnly: false, // Accesible por cliente para sincronización inmediata
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 días
+    // 1) Verificación real de credenciales contra Firebase Auth
+    const authRes = await fetch(`${IDENTITY_URL}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, returnSecureToken: true }),
     });
+    const authData = await authRes.json();
+
+    if (!authRes.ok || !authData.idToken) {
+      const code = authData?.error?.message || 'INVALID_LOGIN_CREDENTIALS';
+      const mensajes: Record<string, string> = {
+        EMAIL_NOT_FOUND: 'No existe una cuenta con este correo.',
+        INVALID_PASSWORD: 'Contraseña incorrecta.',
+        INVALID_LOGIN_CREDENTIALS: 'Correo o contraseña incorrectos.',
+        USER_DISABLED: 'Esta cuenta está deshabilitada.',
+        TOO_MANY_ATTEMPTS_TRY_LATER: 'Demasiados intentos. Intenta más tarde.',
+      };
+      return NextResponse.json(
+        { success: false, error: mensajes[code] || 'No se pudo iniciar sesión.' },
+        { status: 401 },
+      );
+    }
+
+    // 2) Perfil y rol desde Firestore (el rol manda sobre el claim si difieren)
+    const uid = authData.localId as string;
+    const doc = await adminDb.collection('usuarios').doc(uid).get();
+    const data = doc.exists ? doc.data() : null;
+
+    if (!data) {
+      await adminAuth.deleteUser(uid).catch(() => {});
+      await clearSessionCookie();
+      return NextResponse.json(
+        { success: false, error: 'Tu cuenta no tiene perfil en el sistema.' },
+        { status: 403 },
+      );
+    }
+
+    const rol = data?.rol || 'estudiante';
+    if (rol !== 'gestor' && rol !== 'admin') {
+      await clearSessionCookie();
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'El panel web es exclusivo para gestores y administradores. Usa la app móvil como estudiante.',
+        },
+        { status: 403 },
+      );
+    }
+
+    // 3) Cookie de sesión httpOnly firmada por Firebase
+    await setSessionCookie(authData.idToken);
 
     return NextResponse.json({
       success: true,
-      message: `Bienvenido al sistema PrestaLab, ${userData.nombre}.`,
-      user: sessionPayload,
+      message: `Bienvenido, ${data.nombre || email}.`,
+      user: {
+        id: uid,
+        nombre: data.nombre || '',
+        email: data.email || email,
+        rol,
+        laboratoriosAsignados: data.laboratoriosAsignados || [],
+        departamento: data.departamento || '',
+      },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in login route:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Error inesperado';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

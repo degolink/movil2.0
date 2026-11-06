@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const fechaFin = searchParams.get('fechaFin');
 
     const [solicitudesSnap, usuariosSnap, salasSnap] = await Promise.all([
-      adminDb.collection('solicitudes').get(),
+      adminDb.collection('prestamos').get(),
       adminDb.collection('usuarios').get(),
       adminDb.collection('salas').get(),
     ]);
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     const usuarios: Usuario[] = usuariosSnap.docs.map(d => ({ id: d.id, ...d.data() } as Usuario));
     const salas: Sala[] = salasSnap.docs.map(d => ({ id: d.id, ...d.data() } as Sala));
 
-    // Crear mapa de usuario para enriquecer género y rol
+    // Crear mapa de usuario para enriquecer gÃ©nero y rol
     const userMap: { [uid: string]: Usuario } = {};
     for (const u of usuarios) {
       userMap[u.id] = u;
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Enriquecer solicitudes con el género del usuario si no venía en la solicitud
+    // Enriquecer solicitudes con el gÃ©nero del usuario si no venÃ­a en la solicitud
     solicitudes = solicitudes.map(s => {
       const u = userMap[s.userId];
       const userGen = s.userGenero || u?.genero || 'Otro';
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    // Filtrar por género
+    // Filtrar por gÃ©nero
     if (genero !== 'todos') {
       solicitudes = solicitudes.filter(s => s.userGenero === genero);
     }
@@ -73,14 +73,14 @@ export async function GET(request: NextRequest) {
       solicitudes = solicitudes.filter(s => s.userRol === rol);
     }
 
-    // Desglose por género
+    // Desglose por gÃ©nero
     const generoCounts = {
       Masculino: solicitudes.filter(s => s.userGenero === 'Masculino').length,
       Femenino: solicitudes.filter(s => s.userGenero === 'Femenino').length,
       Otro: solicitudes.filter(s => s.userGenero === 'Otro').length,
     };
 
-    // Desglose por laboratorio y género (para Highcharts stacked column)
+    // Desglose por laboratorio y gÃ©nero (para Highcharts stacked column)
     const salasSegmentadas: {
       [id: string]: {
         codigo: string;
@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
       .filter(s => s.total > 0)
       .map(s => s.otro);
 
-    // Segmentación por usuario individual
+    // SegmentaciÃ³n por usuario individual
     const userAggregates: {
       [uid: string]: {
         id: string;

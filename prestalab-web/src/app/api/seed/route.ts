@@ -1,7 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
+import { getSessionUser } from '@/lib/session';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const user = await getSessionUser(request);
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: 'Debes iniciar sesiÃ³n.' },
+      { status: 401 },
+    );
+  }
+  if (user.rol !== 'admin') {
+    return NextResponse.json(
+      { success: false, error: 'SÃ³lo un administrador puede poblar datos demo.' },
+      { status: 403 },
+    );
+  }
+
   try {
     const batch = adminDb.batch();
 
@@ -11,7 +26,7 @@ export async function POST() {
         id: 'sala-redes-201',
         nombre: 'Laboratorio de Redes y Telecomunicaciones',
         codigo: 'LAB-201',
-        edificio: 'Edificio de Ingeniería - Bloque B (Piso 2)',
+        edificio: 'Edificio de IngenierÃ­a - Bloque B (Piso 2)',
         capacidad: 25,
         tipo: 'Redes',
         estado: 'disponible',
@@ -22,35 +37,35 @@ export async function POST() {
       },
       {
         id: 'sala-robotica-104',
-        nombre: 'Laboratorio de Robótica y Sistemas Embebidos',
+        nombre: 'Laboratorio de RobÃ³tica y Sistemas Embebidos',
         codigo: 'LAB-104',
-        edificio: 'Edificio de Tecnologías - Bloque C (Piso 1)',
+        edificio: 'Edificio de TecnologÃ­as - Bloque C (Piso 1)',
         capacidad: 20,
-        tipo: 'Electrónica',
+        tipo: 'ElectrÃ³nica',
         estado: 'disponible',
         gestorResponsableId: 'user-gestor-1',
         gestorNombre: 'Ing. Carlos Mendoza',
         equiposCount: 38,
-        descripcion: 'Estaciones de soldadura, osciloscopios digitales, kits Arduino/ESP32 y brazos robóticos.',
+        descripcion: 'Estaciones de soldadura, osciloscopios digitales, kits Arduino/ESP32 y brazos robÃ³ticos.',
       },
       {
         id: 'sala-computo-302',
-        nombre: 'Sala de Cómputo Avanzado e Inteligencia Artificial',
+        nombre: 'Sala de CÃ³mputo Avanzado e Inteligencia Artificial',
         codigo: 'SALA-302',
-        edificio: 'Centro de Cómputo - Piso 3',
+        edificio: 'Centro de CÃ³mputo - Piso 3',
         capacidad: 35,
         tipo: 'Software',
         estado: 'ocupado',
         gestorResponsableId: 'user-gestor-2',
         gestorNombre: 'Dra. Elena Silva',
         equiposCount: 35,
-        descripcion: 'Workstations con GPUs NVIDIA RTX, entornos configurados para Deep Learning y desarrollo móvil.',
+        descripcion: 'Workstations con GPUs NVIDIA RTX, entornos configurados para Deep Learning y desarrollo mÃ³vil.',
       },
       {
         id: 'sala-multiuso-105',
         nombre: 'Laboratorio de Prototipado y Proyectos Multiuso',
         codigo: 'LAB-105',
-        edificio: 'Edificio de Ingeniería - Bloque A (Piso 1)',
+        edificio: 'Edificio de IngenierÃ­a - Bloque A (Piso 1)',
         capacidad: 30,
         tipo: 'Multiuso',
         estado: 'disponible',
@@ -61,16 +76,16 @@ export async function POST() {
       },
       {
         id: 'sala-quimica-205',
-        nombre: 'Laboratorio de Sensores y Química Aplicada',
+        nombre: 'Laboratorio de Sensores y QuÃ­mica Aplicada',
         codigo: 'LAB-205',
-        edificio: 'Edificio de Ciencias Básicas - Bloque D',
+        edificio: 'Edificio de Ciencias BÃ¡sicas - Bloque D',
         capacidad: 18,
-        tipo: 'Química',
+        tipo: 'QuÃ­mica',
         estado: 'mantenimiento',
         gestorResponsableId: 'user-gestor-1',
         gestorNombre: 'Ing. Carlos Mendoza',
         equiposCount: 15,
-        descripcion: 'Sensores de gas, pH-metros de precisión y campanas de extracción para sensores IoT.',
+        descripcion: 'Sensores de gas, pH-metros de precisiÃ³n y campanas de extracciÃ³n para sensores IoT.',
       },
     ];
 
@@ -79,7 +94,7 @@ export async function POST() {
       batch.set(ref, sala, { merge: true });
     }
 
-    // 2. ARTÍCULOS E INVENTARIO LOCALIZADO (CON ESTADO Y CONDICIÓN DE BUEN ESTADO / DAÑADO / PERDIDO)
+    // 2. ARTÃCULOS E INVENTARIO LOCALIZADO (CON ESTADO Y CONDICIÃ“N DE BUEN ESTADO / DAÃ‘ADO / PERDIDO)
     const articulosData = [
       {
         id: 'art-cisco-switch',
@@ -128,41 +143,41 @@ export async function POST() {
         nombre: 'Osciloscopio Digital Rigol DS1054Z 50MHz',
         categoria: 'Instrumentos',
         salaId: 'sala-robotica-104',
-        salaNombre: 'Laboratorio de Robótica y Sistemas Embebidos',
+        salaNombre: 'Laboratorio de RobÃ³tica y Sistemas Embebidos',
         stock: 4,
         stockTotal: 6,
         estado: 'operativo',
         condicion: 'buen_estado',
         fechaRegistro: '2026-10-10',
-        descripcion: '4 canales analógicos, pantalla a color, decodificación I2C/SPI.',
+        descripcion: '4 canales analÃ³gicos, pantalla a color, decodificaciÃ³n I2C/SPI.',
         codigoActivo: 'ACT-INS-023',
       },
       {
         id: 'art-kit-arduino',
-        nombre: 'Kit de Sensores y Módulos Arduino / ESP32',
+        nombre: 'Kit de Sensores y MÃ³dulos Arduino / ESP32',
         categoria: 'Dispositivos',
         salaId: 'sala-robotica-104',
-        salaNombre: 'Laboratorio de Robótica y Sistemas Embebidos',
+        salaNombre: 'Laboratorio de RobÃ³tica y Sistemas Embebidos',
         stock: 12,
         stockTotal: 15,
         estado: 'en_reparacion',
         condicion: 'daniado',
         fechaRegistro: '2026-10-15',
-        descripcion: 'Sensor de humedad y módulo Bluetooth averiado en prácticas.',
+        descripcion: 'Sensor de humedad y mÃ³dulo Bluetooth averiado en prÃ¡cticas.',
         codigoActivo: 'ACT-DEV-108',
       },
       {
         id: 'art-estacion-soldadura',
-        nombre: 'Estación de Soldadura Hakko FX-888D con Termostato',
+        nombre: 'EstaciÃ³n de Soldadura Hakko FX-888D con Termostato',
         categoria: 'Herramientas',
         salaId: 'sala-robotica-104',
-        salaNombre: 'Laboratorio de Robótica y Sistemas Embebidos',
+        salaNombre: 'Laboratorio de RobÃ³tica y Sistemas Embebidos',
         stock: 6,
         stockTotal: 8,
         estado: 'operativo',
         condicion: 'buen_estado',
         fechaRegistro: '2026-10-16',
-        descripcion: 'Cautín antiestático regulable de 200°C a 480°C.',
+        descripcion: 'CautÃ­n antiestÃ¡tico regulable de 200Â°C a 480Â°C.',
         codigoActivo: 'ACT-HER-089',
       },
       {
@@ -170,7 +185,7 @@ export async function POST() {
         nombre: 'Laptop Workstation Dell Precision RTX 3000',
         categoria: 'Dispositivos',
         salaId: 'sala-computo-302',
-        salaNombre: 'Sala de Cómputo Avanzado e Inteligencia Artificial',
+        salaNombre: 'Sala de CÃ³mputo Avanzado e Inteligencia Artificial',
         stock: 7,
         stockTotal: 10,
         estado: 'en_reparacion',
@@ -181,7 +196,7 @@ export async function POST() {
       },
       {
         id: 'art-proyector-hdmi',
-        nombre: 'Proyector Epson Láser Full HD + Dongle Inalámbrico',
+        nombre: 'Proyector Epson LÃ¡ser Full HD + Dongle InalÃ¡mbrico',
         categoria: 'Audio/Video',
         salaId: 'sala-multiuso-105',
         salaNombre: 'Laboratorio de Prototipado y Proyectos Multiuso',
@@ -190,7 +205,7 @@ export async function POST() {
         estado: 'operativo',
         condicion: 'buen_estado',
         fechaRegistro: '2026-10-22',
-        descripcion: 'Proyección 4000 lúmenes con entrada HDMI, VGA y Miracast.',
+        descripcion: 'ProyecciÃ³n 4000 lÃºmenes con entrada HDMI, VGA y Miracast.',
         codigoActivo: 'ACT-AV-015',
       },
       {
@@ -214,16 +229,16 @@ export async function POST() {
       batch.set(ref, art, { merge: true });
     }
 
-    // 3. USUARIOS (MATRIZ DE ROLES Y GÉNERO)
+    // 3. USUARIOS (MATRIZ DE ROLES Y GÃ‰NERO)
     const usuariosData = [
       {
         id: 'user-admin-1',
-        nombre: 'Ing. Mateo Gómez (Admin)',
+        nombre: 'Ing. Mateo GÃ³mez (Admin)',
         email: 'admin.prestalab@universidad.edu.co',
         telefono: '+57 300 987 6543',
         genero: 'Masculino',
         rol: 'admin',
-        departamento: 'Dirección de Tecnologías de la Información',
+        departamento: 'DirecciÃ³n de TecnologÃ­as de la InformaciÃ³n',
         matriculaOCodigo: 'ADM-001',
         createdAt: new Date('2026-09-01').toISOString(),
       },
@@ -234,7 +249,7 @@ export async function POST() {
         telefono: '+57 312 456 7890',
         genero: 'Masculino',
         rol: 'gestor',
-        departamento: 'Facultad de Ingeniería de Telecomunicaciones',
+        departamento: 'Facultad de IngenierÃ­a de Telecomunicaciones',
         matriculaOCodigo: 'GES-101',
         laboratoriosAsignados: ['sala-redes-201', 'sala-robotica-104', 'sala-quimica-205'],
         createdAt: new Date('2026-09-05').toISOString(),
@@ -246,7 +261,7 @@ export async function POST() {
         telefono: '+57 315 234 5678',
         genero: 'Femenino',
         rol: 'gestor',
-        departamento: 'Facultad de Ciencias de la Computación',
+        departamento: 'Facultad de Ciencias de la ComputaciÃ³n',
         matriculaOCodigo: 'GES-102',
         laboratoriosAsignados: ['sala-computo-302', 'sala-multiuso-105'],
         createdAt: new Date('2026-09-10').toISOString(),
@@ -258,7 +273,7 @@ export async function POST() {
         telefono: '+57 310 876 5432',
         genero: 'Masculino',
         rol: 'docente',
-        departamento: 'Departamento de Telemática',
+        departamento: 'Departamento de TelemÃ¡tica',
         matriculaOCodigo: 'DOC-404',
         createdAt: new Date('2026-09-15').toISOString(),
       },
@@ -269,7 +284,7 @@ export async function POST() {
         telefono: '+57 311 222 3344',
         genero: 'Femenino',
         rol: 'docente',
-        departamento: 'Departamento de Robótica e Inteligencia Artificial',
+        departamento: 'Departamento de RobÃ³tica e Inteligencia Artificial',
         matriculaOCodigo: 'DOC-505',
         createdAt: new Date('2026-09-18').toISOString(),
       },
@@ -280,7 +295,7 @@ export async function POST() {
         telefono: '+57 320 111 2233',
         genero: 'Masculino',
         rol: 'estudiante',
-        departamento: 'Ingeniería de Sistemas (Semestre 8)',
+        departamento: 'IngenierÃ­a de Sistemas (Semestre 8)',
         matriculaOCodigo: 'EST-2023-889',
         createdAt: new Date('2026-09-20').toISOString(),
       },
@@ -291,18 +306,18 @@ export async function POST() {
         telefono: '+57 318 999 8877',
         genero: 'Femenino',
         rol: 'estudiante',
-        departamento: 'Ingeniería Electrónica (Semestre 6)',
+        departamento: 'IngenierÃ­a ElectrÃ³nica (Semestre 6)',
         matriculaOCodigo: 'EST-2024-102',
         createdAt: new Date('2026-09-22').toISOString(),
       },
       {
         id: 'user-estudiante-3',
-        nombre: 'Sofía Montoya',
+        nombre: 'SofÃ­a Montoya',
         email: 'sofia.montoya@estudiantes.edu.co',
         telefono: '+57 319 444 5566',
         genero: 'Femenino',
         rol: 'estudiante',
-        departamento: 'Ingeniería de Software (Semestre 7)',
+        departamento: 'IngenierÃ­a de Software (Semestre 7)',
         matriculaOCodigo: 'EST-2024-305',
         createdAt: new Date('2026-09-25').toISOString(),
       },
@@ -313,7 +328,7 @@ export async function POST() {
       batch.set(ref, user, { merge: true });
     }
 
-    // 4. SOLICITUDES Y PRÉSTAMOS (CICLO DINÁMICO CON GÉNERO Y FECHAS VARIADAS)
+    // 4. SOLICITUDES Y PRÃ‰STAMOS (CICLO DINÃMICO CON GÃ‰NERO Y FECHAS VARIADAS)
     const solicitudesData = [
       {
         id: 'sol-001-pendiente',
@@ -331,7 +346,7 @@ export async function POST() {
         fechaSolicitud: '2026-10-25T10:00:00.000Z',
         fechaInicio: '2026-10-25',
         fechaFin: '2026-10-27',
-        motivo: 'Práctica de configuración de VLANs inter-switch para el proyecto de fin de curso.',
+        motivo: 'PrÃ¡ctica de configuraciÃ³n de VLANs inter-switch para el proyecto de fin de curso.',
         observaciones: 'Requiere consola serie y adaptador USB-RJ45.',
         estado: 'pendiente',
         fueReasignada: false,
@@ -345,13 +360,13 @@ export async function POST() {
         userGenero: 'Masculino',
         tipoRecurso: 'sala',
         salaId: 'sala-robotica-104',
-        salaNombre: 'Laboratorio de Robótica y Sistemas Embebidos',
+        salaNombre: 'Laboratorio de RobÃ³tica y Sistemas Embebidos',
         cantidad: 1,
         fechaSolicitud: '2026-10-26T08:30:00.000Z',
         fechaInicio: '2026-10-26',
         fechaFin: '2026-10-26',
-        motivo: 'Sesión demostrativa de ensamble robótico para la asignatura de Microcontroladores.',
-        observaciones: 'Asistirán 18 estudiantes. Se requiere soporte audiovisual.',
+        motivo: 'SesiÃ³n demostrativa de ensamble robÃ³tico para la asignatura de Microcontroladores.',
+        observaciones: 'AsistirÃ¡n 18 estudiantes. Se requiere soporte audiovisual.',
         estado: 'pendiente',
         fueReasignada: false,
       },
@@ -368,14 +383,14 @@ export async function POST() {
         salaId: 'sala-multiuso-105',
         salaNombre: 'Laboratorio de Prototipado y Proyectos Multiuso',
         salaOriginalId: 'sala-robotica-104',
-        salaOriginalNombre: 'Laboratorio de Robótica y Sistemas Embebidos',
+        salaOriginalNombre: 'Laboratorio de RobÃ³tica y Sistemas Embebidos',
         fueReasignada: true,
-        motivoReasignacion: 'El Laboratorio 104 se encontraba en horario de mantenimiento eléctrico preventivo. Se reasignó al Lab 105 que cuenta con tomas aisladas equivalentes.',
+        motivoReasignacion: 'El Laboratorio 104 se encontraba en horario de mantenimiento elÃ©ctrico preventivo. Se reasignÃ³ al Lab 105 que cuenta con tomas aisladas equivalentes.',
         cantidad: 1,
         fechaSolicitud: '2026-10-22T14:15:00.000Z',
         fechaInicio: '2026-10-24',
         fechaFin: '2026-10-27',
-        motivo: 'Medición de señales PWM y respuesta en frecuencia de inversor.',
+        motivo: 'MediciÃ³n de seÃ±ales PWM y respuesta en frecuencia de inversor.',
         estado: 'activo',
         gestorId: 'user-gestor-1',
         gestorNombre: 'Ing. Carlos Mendoza',
@@ -392,12 +407,12 @@ export async function POST() {
         articuloId: 'art-laptop-ia',
         articuloNombre: 'Laptop Workstation Dell Precision RTX 3000',
         salaId: 'sala-computo-302',
-        salaNombre: 'Sala de Cómputo Avanzado e Inteligencia Artificial',
+        salaNombre: 'Sala de CÃ³mputo Avanzado e Inteligencia Artificial',
         cantidad: 1,
         fechaSolicitud: '2026-10-14T09:00:00.000Z',
         fechaInicio: '2026-10-18',
         fechaFin: '2026-10-21',
-        motivo: 'Capacitación docente en Vision Artificial y PyTorch.',
+        motivo: 'CapacitaciÃ³n docente en Vision Artificial y PyTorch.',
         estado: 'devuelto',
         gestorId: 'user-gestor-2',
         gestorNombre: 'Dra. Elena Silva',
@@ -414,23 +429,23 @@ export async function POST() {
         userGenero: 'Masculino',
         tipoRecurso: 'sala',
         salaId: 'sala-quimica-205',
-        salaNombre: 'Laboratorio de Sensores y Química Aplicada',
+        salaNombre: 'Laboratorio de Sensores y QuÃ­mica Aplicada',
         cantidad: 1,
         fechaSolicitud: '2026-10-19T11:20:00.000Z',
         fechaInicio: '2026-10-22',
         fechaFin: '2026-10-22',
-        motivo: 'Experimento extracurricular de síntesis de electrolitos.',
+        motivo: 'Experimento extracurricular de sÃ­ntesis de electrolitos.',
         estado: 'rechazado',
         gestorId: 'user-gestor-1',
         gestorNombre: 'Ing. Carlos Mendoza',
         fechaRechazo: '2026-10-20T10:00:00.000Z',
-        motivoRechazo: 'El laboratorio se encuentra clausurado temporalmente por mantenimiento de campanas extractoras y calibración de detectores de gas.',
+        motivoRechazo: 'El laboratorio se encuentra clausurado temporalmente por mantenimiento de campanas extractoras y calibraciÃ³n de detectores de gas.',
         fueReasignada: false,
       },
       {
         id: 'sol-006-devuelta-femenino',
         userId: 'user-estudiante-3',
-        userNombre: 'Sofía Montoya',
+        userNombre: 'SofÃ­a Montoya',
         userEmail: 'sofia.montoya@estudiantes.edu.co',
         userRol: 'estudiante',
         userGenero: 'Femenino',
@@ -443,7 +458,7 @@ export async function POST() {
         fechaSolicitud: '2026-10-10T15:00:00.000Z',
         fechaInicio: '2026-10-12',
         fechaFin: '2026-10-15',
-        motivo: 'Configuración de enrutamiento OSPF y topología de red en laboratorio.',
+        motivo: 'ConfiguraciÃ³n de enrutamiento OSPF y topologÃ­a de red en laboratorio.',
         estado: 'devuelto',
         gestorId: 'user-gestor-1',
         gestorNombre: 'Ing. Carlos Mendoza',
@@ -460,14 +475,14 @@ export async function POST() {
         userGenero: 'Femenino',
         tipoRecurso: 'mixto',
         articuloId: 'art-kit-arduino',
-        articuloNombre: 'Kit de Sensores y Módulos Arduino / ESP32',
+        articuloNombre: 'Kit de Sensores y MÃ³dulos Arduino / ESP32',
         salaId: 'sala-robotica-104',
-        salaNombre: 'Laboratorio de Robótica y Sistemas Embebidos',
+        salaNombre: 'Laboratorio de RobÃ³tica y Sistemas Embebidos',
         cantidad: 2,
         fechaSolicitud: '2026-10-23T11:00:00.000Z',
         fechaInicio: '2026-10-25',
         fechaFin: '2026-10-29',
-        motivo: 'Pruebas de adquisición de datos sensoriales para proyecto de investigación con semillero.',
+        motivo: 'Pruebas de adquisiciÃ³n de datos sensoriales para proyecto de investigaciÃ³n con semillero.',
         estado: 'activo',
         gestorId: 'user-gestor-1',
         gestorNombre: 'Ing. Carlos Mendoza',
@@ -477,25 +492,15 @@ export async function POST() {
     ];
 
     for (const sol of solicitudesData) {
-      const ref = adminDb.collection('solicitudes').doc(sol.id);
+      const ref = adminDb.collection('prestamos').doc(sol.id);
       batch.set(ref, sol, { merge: true });
-      const prestamoRef = adminDb.collection('prestamos').doc(sol.id);
-      batch.set(prestamoRef, {
-        ...sol,
-        userId: sol.userId,
-        articuloId: sol.articuloId || null,
-        articuloNombre: sol.articuloNombre || sol.salaNombre,
-        estado: sol.estado,
-        createdAt: sol.fechaSolicitud,
-        updatedAt: new Date().toISOString(),
-      }, { merge: true });
     }
 
     await batch.commit();
 
     return NextResponse.json({
       success: true,
-      message: 'Base de datos de PrestaLab inicializada con éxito con soporte de género, condición de activos y fechas',
+      message: 'Base de datos de PrestaLab inicializada con Ã©xito con soporte de gÃ©nero, condiciÃ³n de activos y fechas',
       seeded: {
         salas: salasData.length,
         articulos: articulosData.length,

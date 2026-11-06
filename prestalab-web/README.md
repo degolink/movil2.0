@@ -119,6 +119,17 @@ Integrado en 4 secciones analíticas con panel superior de **Filtros Paramétric
 
 | Método | Endpoint | Descripción |
 | :--- | :--- | :--- |
+| `POST` | `/api/auth/login` | Inicia sesión con Firebase Auth y emite cookie httpOnly firmada. |
+| `POST` | `/api/auth/register` | Crea la cuenta en Firebase Auth y el perfil en `usuarios` (rol estudiante). |
+| `POST` | `/api/auth/logout` | Cierra la sesión y borra la cookie. |
+| `GET` | `/api/auth/me` | Devuelve el usuario de la sesión activa. |
+| `POST` | `/api/mobile/auth/login` | Login de la app móvil; devuelve JWT + perfil. |
+| `POST` | `/api/mobile/auth/register` | Registro móvil (rol estudiante) + JWT. |
+| `GET` | `/api/mobile/auth/me` | Perfil de la sesión móvil (Bearer). |
+| `POST` | `/api/mobile/auth/recuperar` | Envía el correo de recuperación de contraseña. |
+| `GET` | `/api/mobile/sync` | Pull móvil: salas, artículos, préstamos y notificaciones. |
+| `POST` | `/api/mobile/prestamos` | Crea una solicitud desde la app (idempotente por `clientId`). |
+| `PATCH` | `/api/mobile/prestamos/[id]` | Registra la devolución del préstamo del usuario. |
 | `POST` | `/api/seed` | Inicializa Firestore con laboratorios, artículos, usuarios y préstamos demo. |
 | `GET` | `/api/stats` | Retorna los totales y KPIs ejecutivos para el Dashboard. |
 | `GET, POST` | `/api/solicitudes` | Lista solicitudes con filtros o tramita una nueva solicitud. |

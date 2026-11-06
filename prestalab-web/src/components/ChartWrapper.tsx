@@ -17,8 +17,8 @@ export default function ChartWrapper({ options }: ChartWrapperProps) {
 
   if (!mounted) {
     return (
-      <div className="h-72 w-full flex items-center justify-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-        <span className="text-xs text-slate-400">Cargando visualización gráfica...</span>
+      <div className="h-72 w-full flex items-center justify-center bg-[var(--background)] rounded-[14px] border border-dashed border-[var(--border)]">
+        <span className="text-xs text-[var(--text-soft)]">Cargando visualización gráfica...</span>
       </div>
     );
   }
