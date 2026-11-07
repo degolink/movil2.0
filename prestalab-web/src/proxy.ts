@@ -7,6 +7,7 @@ import { NextResponse, type NextRequest } from 'next/server';
  */
 const PUBLIC = ['/login', '/register'];
 const PUBLIC_PREFIX = [
+  '/api/health',
   '/api/auth',
   '/api/mobile',
   '/_next',
