@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["firebase-admin"],
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

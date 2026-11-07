@@ -4,56 +4,72 @@ import { getAuth } from 'firebase-admin/auth';
 import path from 'path';
 import fs from 'fs';
 
-/**
- * Inicializa Firebase Admin con prioridad a variables de entorno
- * (recomendado para despliegue) y, como respaldo, serviceAccountKey.json.
- *
- * Variables esperadas en .env.local:
- *   FIREBASE_PROJECT_ID
- *   FIREBASE_CLIENT_EMAIL
- *   FIREBASE_PRIVATE_KEY   (con \n escapados)
- */
-const clean = (v?: string) =>
-  (v || '').trim().replace(/^["']|["']$/g, '');
-
-function fromEnv(): { projectId: string; clientEmail: string; privateKey: string } | null {
-  const projectId = clean(process.env.FIREBASE_PROJECT_ID);
-  const clientEmail = clean(process.env.FIREBASE_CLIENT_EMAIL);
-  const privateKey = clean(process.env.FIREBASE_PRIVATE_KEY).replace(/\\n/g, '\n');
-
-  if (projectId && clientEmail && privateKey) {
-    return { projectId, clientEmail, privateKey };
-  }
-  return null;
-}
+const clean = (v?: string) => (v || '').trim().replace(/^["']|["']$/g, '');
 
 function getFirebaseAdminApp(): App {
   if (getApps().length > 0) {
     return getApps()[0];
   }
 
-  const envCreds = fromEnv();
-  if (envCreds) {
-    return initializeApp({
-      credential: cert(envCreds),
-      projectId: envCreds.projectId,
-    });
+  // 1. Variable con JSON completo (serviceAccountKey en una sola variable)
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+    try {
+      let rawKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY.trim();
+      if (
+        (rawKey.startsWith("'") && rawKey.endsWith("'")) ||
+        (rawKey.startsWith('"') && rawKey.endsWith('"'))
+      ) {
+        rawKey = rawKey.slice(1, -1);
+      }
+      if (!rawKey.startsWith('{')) {
+        rawKey = Buffer.from(rawKey, 'base64').toString('utf8');
+      }
+      const serviceAccount = JSON.parse(rawKey);
+      return initializeApp({
+        credential: cert(serviceAccount),
+        projectId: serviceAccount.project_id || clean(process.env.FIREBASE_PROJECT_ID),
+      });
+    } catch (error) {
+      console.error('[Firebase Admin] Error parseando FIREBASE_SERVICE_ACCOUNT_KEY:', error);
+    }
   }
 
+  // 2. Variables de entorno individuales
+  const projectId = clean(process.env.FIREBASE_PROJECT_ID);
+  const clientEmail = clean(process.env.FIREBASE_CLIENT_EMAIL);
+  const rawPrivateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+  if (projectId && clientEmail && rawPrivateKey) {
+    try {
+      const privateKey = clean(rawPrivateKey).replace(/\\n/g, '\n');
+      return initializeApp({
+        credential: cert({
+          projectId,
+          clientEmail,
+          privateKey,
+        }),
+        projectId,
+      });
+    } catch (error) {
+      console.error('[Firebase Admin] Error inicializando credenciales individuales:', error);
+    }
+  }
+
+  // 3. Archivo local de credenciales (Desarrollo local)
   const serviceAccountPath = path.resolve(process.cwd(), 'serviceAccountKey.json');
   if (fs.existsSync(serviceAccountPath)) {
-    const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
-    return initializeApp({
-      credential: cert(serviceAccount),
-      projectId: serviceAccount.project_id,
-    });
+    try {
+      const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+      return initializeApp({
+        credential: cert(serviceAccount),
+        projectId: serviceAccount.project_id,
+      });
+    } catch (error) {
+      console.error('[Firebase Admin] Error leyendo serviceAccountKey.json:', error);
+    }
   }
 
-  // Último recurso: credenciales por defecto del entorno (GOOGLE_APPLICATION_CREDENTIALS)
-  console.warn(
-    '[firebase-admin] Sin credenciales explícitas: usando Application Default Credentials. ' +
-      'Define FIREBASE_PROJECT_ID / FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY en .env.local.',
-  );
+  console.warn('[Firebase Admin] Sin credenciales explícitas: usando credenciales por defecto.');
   return initializeApp();
 }
 
