@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebase-admin';
+import { adminDb } from '@/lib/firebase-admin';
 
 /**
  * Registro de cuentas — mismo flujo que `registerUser` de la app móvil:
@@ -121,7 +121,10 @@ export async function POST(request: NextRequest) {
       );
     } catch (dbError) {
       // Sin perfil la cuenta no puede iniciar sesión: se revierte el alta.
-      await adminAuth.deleteUser(uid).catch(() => {});
+      try {
+        const { adminAuth } = await import('@/lib/firebase-admin');
+        await adminAuth.deleteUser(uid).catch(() => {});
+      } catch {}
       console.error('[register] No se pudo guardar el perfil:', dbError);
       return NextResponse.json(
         {

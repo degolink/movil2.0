@@ -1,6 +1,6 @@
 import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase-admin/auth';
+import type { Auth } from 'firebase-admin/auth';
 import path from 'path';
 import fs from 'fs';
 
@@ -75,5 +75,21 @@ function getFirebaseAdminApp(): App {
 
 const app = getFirebaseAdminApp();
 export const adminDb = getFirestore(app);
-export const adminAuth = getAuth(app);
+
+// Lazy Proxy para adminAuth: evita cargar jwks-rsa/jose hasta que realmente se use un método de Auth
+let _adminAuth: Auth | null = null;
+export const adminAuth = new Proxy({} as Auth, {
+  get(_target, prop) {
+    if (!_adminAuth) {
+      const { getAuth } = require('firebase-admin/auth');
+      _adminAuth = getAuth(app);
+    }
+    const val = (_adminAuth as any)[prop];
+    if (typeof val === 'function') {
+      return val.bind(_adminAuth);
+    }
+    return val;
+  },
+});
+
 export default app;
