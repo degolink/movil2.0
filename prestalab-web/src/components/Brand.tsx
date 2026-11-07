@@ -1,5 +1,8 @@
 import React from 'react';
-import { mdiFlaskOutline } from '@mdi/js';
+
+// Glifo `flask-outline` de MaterialCommunityIcons (mismo path de @mdi/js sin requerir dependencia externa)
+const mdiFlaskOutline =
+  'M6,2V4H7V11L3.5,17C2.78,18.25 3.67,20 5.12,20H18.88C20.33,20 21.22,18.25 20.5,17L17,11V4H18V2H6M8.5,12H15.5L17.75,16H6.25L8.5,12Z';
 
 /**
  * Marca PrestaLab — réplica exacta del componente Brand de la app móvil:
