@@ -19,6 +19,7 @@ const MENSAJES: Record<string, string> = {
   OPERATION_NOT_ALLOWED:
     'El registro con correo y contraseña está deshabilitado en Firebase.',
   TOO_MANY_ATTEMPTS_TRY_LATER: 'Demasiados intentos. Intenta más tarde.',
+  API_KEY_INVALID: 'La API Key de Firebase no es válida.',
 };
 
 const GENEROS = ['Masculino', 'Femenino', 'Otro'];
@@ -66,8 +67,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey =
-      process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY;
+    const rawApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY || '';
+    const apiKey = rawApiKey.trim().replace(/^["']|["']$/g, '');
 
     if (!apiKey) {
       return NextResponse.json(
@@ -91,11 +92,14 @@ export async function POST(request: NextRequest) {
     const authData = await authRes.json();
 
     if (!authRes.ok || !authData.localId) {
+      console.error('[register] Firebase Auth error completo:', JSON.stringify(authData));
       const code = authData?.error?.message || 'SIGNUP_FAILED';
+      const userMessage = MENSAJES[code] || `Error de Firebase: ${code}`;
       return NextResponse.json(
         {
           success: false,
-          error: MENSAJES[code] || 'No se pudo crear la cuenta. Intenta de nuevo.',
+          error: userMessage,
+          code,
         },
         { status: code === 'EMAIL_EXISTS' ? 409 : 400 },
       );
