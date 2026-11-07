@@ -1,26 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebase-admin';
+import { adminAuth, adminDb } from '@/lib/firebase-admin';
 
 /**
- * Registro de cuentas — mismo flujo que `registerUser` de la app móvil:
- *  1. Crea el usuario en Firebase Auth (Identity Toolkit).
- *  2. Guarda el perfil en `usuarios/{uid}` con rol `estudiante`.
- *
- * El portal web es para gestores/administradores; las cuentas creadas aquí
- * sirven para la app móvil (o quedan listas para que un admin suba el rol).
+ * Registro de cuentas:
+ * 1. Crea el usuario en Firebase Auth usando Firebase Admin SDK (directo y seguro).
+ * 2. Guarda el perfil en Firestore `usuarios/{uid}` con rol `estudiante`.
  */
-
-const SIGNUP_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp';
-
-const MENSAJES: Record<string, string> = {
-  EMAIL_EXISTS: 'Ya existe una cuenta con este correo.',
-  INVALID_EMAIL: 'El correo electrónico no es válido.',
-  WEAK_PASSWORD: 'La contraseña debe tener al menos 6 caracteres.',
-  OPERATION_NOT_ALLOWED:
-    'El registro con correo y contraseña está deshabilitado en Firebase.',
-  TOO_MANY_ATTEMPTS_TRY_LATER: 'Demasiados intentos. Intenta más tarde.',
-  API_KEY_INVALID: 'La API Key de Firebase no es válida.',
-};
 
 const GENEROS = ['Masculino', 'Femenino', 'Otro'];
 
@@ -53,8 +38,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error:
-            'Ingresa un número de teléfono colombiano válido (ej. +57 300 123 4567).',
+          error: 'Ingresa un número de teléfono colombiano válido (ej. +57 300 123 4567).',
         },
         { status: 400 },
       );
@@ -67,47 +51,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const rawApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY || '';
-    const apiKey = rawApiKey.trim().replace(/^["']|["']$/g, '');
-
-    if (!apiKey) {
-      return NextResponse.json(
-        {
-          success: false,
-          error:
-            'Falta NEXT_PUBLIC_FIREBASE_API_KEY en .env.local para registrar usuarios.',
-        },
-        { status: 503 },
-      );
-    }
-
     const displayName = `${nombre} ${apellido}`;
 
-    // 1) Alta en Firebase Auth
-    const authRes = await fetch(`${SIGNUP_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, displayName, returnSecureToken: true }),
-    });
-    const authData = await authRes.json();
-
-    if (!authRes.ok || !authData.localId) {
-      console.error('[register] Firebase Auth error completo:', JSON.stringify(authData));
-      const code = authData?.error?.message || 'SIGNUP_FAILED';
-      const userMessage = MENSAJES[code] || `Error de Firebase: ${code}`;
+    // 1) Crear el usuario directamente en Firebase Auth usando Admin SDK
+    let uid: string;
+    try {
+      const userRecord = await adminAuth.createUser({
+        email,
+        password,
+        displayName,
+      });
+      uid = userRecord.uid;
+    } catch (authError: any) {
+      console.error('[register] adminAuth.createUser error:', authError);
+      if (authError.code === 'auth/email-already-exists') {
+        return NextResponse.json(
+          { success: false, error: 'Ya existe una cuenta con este correo.' },
+          { status: 409 },
+        );
+      }
+      if (authError.code === 'auth/invalid-password') {
+        return NextResponse.json(
+          { success: false, error: 'La contraseña debe tener al menos 6 caracteres.' },
+          { status: 400 },
+        );
+      }
       return NextResponse.json(
-        {
-          success: false,
-          error: userMessage,
-          code,
-        },
-        { status: code === 'EMAIL_EXISTS' ? 409 : 400 },
+        { success: false, error: authError.message || 'No se pudo crear el usuario en Firebase.' },
+        { status: 400 },
       );
     }
 
-    const uid = authData.localId as string;
-
-    // 2) Perfil en Firestore (mismo esquema que la app móvil)
+    // 2) Perfil en Firestore
     try {
       await adminDb.collection('usuarios').doc(uid).set(
         {
@@ -124,17 +99,13 @@ export async function POST(request: NextRequest) {
         { merge: true },
       );
     } catch (dbError) {
-      // Sin perfil la cuenta no puede iniciar sesión: se revierte el alta.
-      try {
-        const { adminAuth } = await import('@/lib/firebase-admin');
-        await adminAuth.deleteUser(uid).catch(() => {});
-      } catch {}
+      // Revertir creación si falla Firestore
+      await adminAuth.deleteUser(uid).catch(() => {});
       console.error('[register] No se pudo guardar el perfil:', dbError);
       return NextResponse.json(
         {
           success: false,
-          error:
-            'No se pudo guardar el perfil en el sistema. Verifica la configuración de Firebase e intenta de nuevo.',
+          error: 'No se pudo guardar el perfil en Firestore. Verifica las credenciales de Firebase.',
         },
         { status: 500 },
       );
